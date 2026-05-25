@@ -1,0 +1,316 @@
+import type { Metadata } from 'next'
+import { SiteHeader } from '@/components/site-header'
+import { SiteFooter } from '@/components/site-footer'
+import { Button } from '@/components/ui/button'
+import { Card } from '@/components/ui/card'
+import { getLatestEpisode, getRecentEpisodes } from '@/lib/podcast-source'
+import { ListenButton } from '@/components/listen-button'
+import { getPodcastDetails, getSiteDetails } from '@/lib/contact-source'
+import Image from 'next/image'
+import { ApplePodcastIcon } from '@/components/icons/apple-podcast-icon'
+import { RssIcon } from '@/components/icons/rss-icon'
+import { SpotifyIcon } from '@/components/icons/spotify-icon'
+import { YouTubeIcon } from '@/components/icons/youtube-icon'
+import { PodcastAddictIcon } from '@/components/icons/podcast-addict-icon'
+import { SubscribeModal } from '@/components/subscribe-modal'
+import { getPodcastTestimonials } from '@/lib/testimonial-source'
+import { getHeroImage } from '@/lib/hero-image-source'
+import { generateConfiguredHeroImageUrls } from '@/lib/image-optimization'
+import { HeroWithImage } from '@/components/hero'
+
+const HERO_IMAGE = 'podcast_hero-banner'
+
+export async function generateMetadata(): Promise<Metadata> {
+  const [podcastDetails, siteDetails, latestEpisode] = await Promise.all([
+    getPodcastDetails(),
+    getSiteDetails(),
+    getLatestEpisode(),
+  ])
+
+  const title = `${podcastDetails.name} Podcast | Anna Wallace`
+  const description = `${podcastDetails.name} is a project collecting and retelling true family stories to address the gap between what we think of as normal and what is actually normal.`
+  const url = `${siteDetails.canonicalUrl}/podcast`
+  
+  // Use latest episode cover image or fallback to site logo
+  const ogImage = latestEpisode?.coverImage || siteDetails.logoPath
+
+  return {
+    title,
+    description,
+    keywords: [
+      'family podcast',
+      'storytelling',
+      'family stories',
+      'healing',
+      'modern family',
+      'trauma recovery',
+      'personal growth',
+      'Anna Wallace',
+      podcastDetails.name,
+    ],
+    authors: [{ name: 'Anna Wallace' }],
+    creator: 'Anna Wallace',
+    openGraph: {
+      title,
+      description,
+      url,
+      siteName: podcastDetails.name,
+      type: 'website',
+      images: [
+        {
+          url: ogImage,
+          width: 1200,
+          height: 630,
+          alt: `${podcastDetails.name} Podcast`,
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+      images: [ogImage],
+    },
+    alternates: {
+      canonical: url,
+    },
+  }
+}
+
+export default async function PodcastPage() {
+  const heroImage = getHeroImage(HERO_IMAGE)
+  const heroImageUrls = generateConfiguredHeroImageUrls(heroImage)
+  
+  const [podcastDetails, siteDetails, testimonials, latestEpisode, recentEpisodes] = await Promise.all([
+    getPodcastDetails(),
+    getSiteDetails(),
+    getPodcastTestimonials(),
+    getLatestEpisode(),
+    getRecentEpisodes(4),
+  ])
+
+  const { sources } = podcastDetails
+
+  // JSON-LD structured data for PodcastSeries
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'PodcastSeries',
+    name: podcastDetails.name,
+    description: `${podcastDetails.name} is a project collecting and retelling true family stories to address the gap between what we think of as normal and what is actually normal.`,
+    url: `${siteDetails.canonicalUrl}/podcast`,
+    author: {
+      '@type': 'Person',
+      name: 'Anna Wallace',
+      url: siteDetails.canonicalUrl,
+    },
+    image: latestEpisode?.coverImage || siteDetails.logoPath,
+    episodes: recentEpisodes.map(episode => ({
+      '@type': 'PodcastEpisode',
+      name: episode.title,
+      episodeNumber: episode.number,
+      duration: episode.duration,
+      datePublished: episode.publishedAt,
+      image: episode.coverImage,
+    })),
+  }
+
+  // Helper to get the correct icon component
+  const getIcon = (iconName: string) => {
+    switch (iconName) {
+      case 'apple-podcasts':
+        return <ApplePodcastIcon />
+      case 'spotify':
+        return <SpotifyIcon />
+      case 'youtube':
+        return <YouTubeIcon />
+      case 'rss':
+        return <RssIcon />
+      case 'podcast-addict':
+        return <PodcastAddictIcon />
+      default:
+        return null
+    }
+  }
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <div className="min-h-screen bg-background">
+        <SiteHeader />
+
+      {/* Hero Banner */}
+      <HeroWithImage heroImage={{ alt: heroImage.alt, urls: heroImageUrls }} />
+
+      {/* Podcast Description & CTA */}
+      <section className="container mx-auto px-4 py-8 md:py-12 max-w-4xl">
+        <div className="text-center space-y-6">
+          <div className="space-y-3 text-base md:text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+            <p>
+              Hosted by Anna - an interviewer and former corporate affairs leader - each episode explores how early stories shape who we become and how we can choose to rewrite them.
+            </p>
+            <p>
+              If you think you have a story to share or would like to partner with the show, I&apos;d love to hear from you.
+            </p>
+          </div>
+          <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
+            <SubscribeModal sources={sources}>
+              <Button size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90">
+                Subscribe Now
+              </Button>
+            </SubscribeModal>
+            <Button asChild size="lg" variant="outline" className="border-border text-foreground">
+              <a href="/contact">Share your story</a>
+            </Button>
+          </div>
+        </div>
+      </section>
+
+      {/* Latest Episode */}
+      <section className="bg-secondary py-8 md:py-10">
+        <div className="container mx-auto px-4 max-w-4xl">
+          <h2 className="text-2xl md:text-3xl font-serif text-foreground mb-8">Latest Episode</h2>
+          {latestEpisode && (
+            <Card className="p-6 md:p-8 bg-card border-border">
+              <div className="flex flex-col md:flex-row gap-6 md:gap-8">
+                <div className="w-full md:w-48 h-48 bg-muted rounded-lg flex-shrink-0 relative overflow-hidden">
+                  {latestEpisode.coverImage && (
+                    <Image
+                      src={latestEpisode.coverImage}
+                      alt={latestEpisode.title}
+                      fill
+                      className="object-cover"
+                    />
+                  )}
+                </div>
+                <div className="flex-1 space-y-4">
+                  <div className="space-y-2">
+                    <p className="text-sm text-muted-foreground">
+                      Episode {latestEpisode.number} • {latestEpisode.duration}
+                    </p>
+                    <h3 className="text-xl md:text-2xl font-serif text-foreground">
+                      {latestEpisode.title}
+                    </h3>
+                    <div
+                      className="text-muted-foreground leading-relaxed prose prose-sm max-w-none"
+                      dangerouslySetInnerHTML={{ __html: latestEpisode.htmlDescription }}
+                    />
+                  </div>
+                  <ListenButton
+                    audioUrls={latestEpisode.audioUrls}
+                    episodeTitle={latestEpisode.title}
+                  />
+                </div>
+              </div>
+            </Card>
+          )}
+        </div>
+      </section>
+
+      {/* Recent Episodes */}
+      <section className="container mx-auto px-4 py-8 md:py-10 max-w-6xl">
+        <h2 className="text-2xl md:text-3xl font-serif text-foreground mb-8">Recent Episodes</h2>
+        <div className="grid md:grid-cols-2 gap-6 md:gap-8">
+          {recentEpisodes.map((episode) => (
+            <Card key={episode.id} className="p-4 md:p-6 bg-card border-border hover:shadow-lg transition-shadow overflow-hidden">
+              <div className="flex flex-col sm:flex-row gap-4">
+                <div className="w-full sm:w-24 h-32 sm:h-24 bg-muted rounded flex-shrink-0 relative overflow-hidden">
+                  {episode.coverImage && (
+                    <Image
+                      src={episode.coverImage}
+                      alt={episode.title}
+                      fill
+                      className="object-cover"
+                    />
+                  )}
+                </div>
+                <div className="flex-1 min-w-0 space-y-2">
+                  <p className="text-sm text-muted-foreground">
+                    Episode {episode.number} • {episode.duration}
+                  </p>
+                  <h3 className="text-lg font-serif text-foreground line-clamp-2">{episode.title}</h3>
+                  <div
+                    className="text-sm text-muted-foreground leading-relaxed line-clamp-3 sm:line-clamp-4 break-words prose prose-sm max-w-none"
+                    dangerouslySetInnerHTML={{ __html: episode.htmlDescription }}
+                  />
+                  <ListenButton
+                    audioUrls={episode.audioUrls}
+                    episodeTitle={episode.title}
+                    variant="ghost"
+                    size="sm"
+                  />
+                </div>
+              </div>
+            </Card>
+          ))}
+        </div>
+      </section>
+
+      {/* Testimonials Section */}
+      <section className="bg-secondary py-8 md:py-10">
+        <div className="container mx-auto px-4 max-w-5xl">
+        <div className="space-y-4 mb-12 text-center">
+          <h2 className="text-4xl md:text-5xl tracking-wide text-muted-foreground text-balance">
+            Praise for podcast
+          </h2>
+        </div>
+
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {testimonials.map((testimonial, index) => (
+            <Card
+              key={testimonial.id}
+              className={`p-6 bg-card border-border`}
+            >
+              <blockquote className="space-y-4">
+                <p className="text-muted-foreground leading-relaxed italic">
+                  &quot;{testimonial.quote}&quot;
+                </p>
+                <footer className="text-sm">
+                  <cite className="not-italic font-medium text-foreground">
+                    {testimonial.authorName}
+                  </cite>
+                  {testimonial.context &&
+                    <p className="text-muted-foreground">{testimonial.context}</p>
+                  }
+                </footer>
+              </blockquote>
+            </Card>
+          ))}
+        </div>
+        </div>
+      </section>
+
+      {/* Subscribe CTA */}
+      <section className="bg-primary text-primary-foreground py-8 md:py-10">
+        <div className="container mx-auto px-4 max-w-3xl text-center">
+          <h2 className="text-2xl md:text-3xl font-serif mb-4 md:mb-6 text-balance">
+            Never miss an episode
+          </h2>
+          <p className="text-base md:text-lg mb-6 md:mb-8 leading-relaxed opacity-90">
+            Subscribe on your favourite podcast platform and join the conversation.
+          </p>
+          <div className="flex flex-wrap gap-4 justify-center">
+            {sources.map((source) => (
+              <Button 
+                key={source.id}
+                asChild 
+                size="lg" 
+                variant="outline" 
+                className="bg-transparent border-primary-foreground text-primary-foreground hover:bg-primary-foreground hover:text-primary"
+              >
+                <a href={source.url} target="_blank" rel="noopener noreferrer">
+                  {getIcon(source.icon)}
+                  {source.cta}
+                </a>
+              </Button>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <SiteFooter />
+      </div>
+    </>
+  )
+}
