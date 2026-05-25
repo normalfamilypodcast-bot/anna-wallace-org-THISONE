@@ -84,19 +84,9 @@ export default async function WorkWithAnnaPage() {
                 <p>
                   My role is to help you build a life that feels aligned, meaningful and truly yours.
                 </p>
-                <p>
-                  I follow the{' '}
-                  
-                    href="https://coachingfederation.org/credentialing/coaching-ethics/icf-code-of-ethics/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="underline underline-offset-2 hover:text-foreground transition-colors"
-                  >
-                    ICF Code of Ethics
-                  </a>{' '}
-                  and my work is guided by a simple mission: to help people build better relationships and happier lives.
-                </p>
-              </div>
+               <p>
+                  I follow the <a href="https://coachingfederation.org/credentialing/coaching-ethics/icf-code-of-ethics/" target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 hover:text-foreground transition-colors">ICF Code of Ethics</a> and my work is guided by a simple mission: to help people build better relationships and happier lives.
+                </p>              </div>
               <div className="mt-10">
                 <Button asChild size="lg" className="rounded-none px-8">
                   <Link href="/contact">Enquire about coaching</Link>
