@@ -118,13 +118,18 @@ function transformSpotifyEpisode(episode: SpotifyEpisode, episodeNumber: number,
 }
 
 async function fetchEpisodes(): Promise<PodcastEpisode[]> {
-  const { spotifyShowId: showId, sources: availableSources } = await getPodcastDetails();
+  try {
+    const { spotifyShowId: showId, sources: availableSources } = await getPodcastDetails();
 
-  const data = await fetchShowEpisodes(showId, 50)
-  
-  return data.items.map((episode, index) => 
-    transformSpotifyEpisode(episode, data.items.length - index, availableSources)
-  )
+    const data = await fetchShowEpisodes(showId, 50)
+
+    return data.items.map((episode, index) =>
+      transformSpotifyEpisode(episode, data.items.length - index, availableSources)
+    )
+  } catch (error) {
+    console.warn('Spotify fetch failed, returning empty episode list:', error)
+    return []
+  }
 }
 
 export async function getLatestEpisode(): Promise<PodcastEpisode | null> {
