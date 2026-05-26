@@ -22,7 +22,7 @@ const HERO_IMAGES: HeroImageConfigMap = {
     },
   },
   'podcast_hero-banner': {
-    imageId: 'anf-podcast-hero-banner',
+    imageId: 'A_Normal_Family_a4esw0',
     alt: 'A Normal Family Podcast hero banner',
     devices: {
       desktop: {
