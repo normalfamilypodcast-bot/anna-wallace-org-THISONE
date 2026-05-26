@@ -14,11 +14,6 @@ import { YouTubeIcon } from '@/components/icons/youtube-icon'
 import { PodcastAddictIcon } from '@/components/icons/podcast-addict-icon'
 import { SubscribeModal } from '@/components/subscribe-modal'
 import { getPodcastTestimonials } from '@/lib/testimonial-source'
-import { getHeroImage } from '@/lib/hero-image-source'
-import { generateConfiguredHeroImageUrls } from '@/lib/image-optimization'
-import { HeroWithImage } from '@/components/hero'
-
-const HERO_IMAGE = 'podcast_hero-banner'
 
 export async function generateMetadata(): Promise<Metadata> {
   const [podcastDetails, siteDetails, latestEpisode] = await Promise.all([
@@ -78,9 +73,6 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function PodcastPage() {
-  const heroImage = getHeroImage(HERO_IMAGE)
-  const heroImageUrls = generateConfiguredHeroImageUrls(heroImage)
-  
   const [podcastDetails, siteDetails, testimonials, latestEpisode, recentEpisodes] = await Promise.all([
     getPodcastDetails(),
     getSiteDetails(),
@@ -141,7 +133,15 @@ export default async function PodcastPage() {
         <SiteHeader />
 
       {/* Hero Banner */}
-      <HeroWithImage heroImage={{ alt: heroImage.alt, urls: heroImageUrls }} />
+      <div className="relative w-full h-64 md:h-96 overflow-hidden">
+        <Image
+          src="https://res.cloudinary.com/dhngfy4p6/image/upload/v1776862078/A_Normal_Family_a4esw0.png"
+          alt="A Normal Family Podcast"
+          fill
+          className="object-cover object-center"
+          priority
+        />
+      </div>
 
       {/* Podcast Description & CTA */}
       <section className="container mx-auto px-4 py-8 md:py-12 max-w-4xl">
