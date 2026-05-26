@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { Playfair_Display, DM_Sans } from 'next/font/google'
+import { Playfair_Display, Nunito } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import './globals.css'
 import { ContactDetailsProvider } from '@/providers/contact-details-provider';
@@ -16,9 +16,9 @@ const playfair = Playfair_Display({
   display: 'swap',
 })
 
-const dmSans = DM_Sans({
+const nunito = Nunito({
   subsets: ['latin'],
-  variable: '--font-dm-sans',
+  variable: '--font-nunito',
   display: 'swap',
 })
 
@@ -31,7 +31,7 @@ export default async function RootLayout({
   const siteDetails = await getSiteDetails();
   return (
     <html lang="en">
-      <body className={`${playfair.variable} ${dmSans.variable} antialiased`}>
+      <body className={`${playfair.variable} ${nunito.variable} antialiased`}>
         <ContactDetailsProvider value={contactDetails}>
           <SiteDetailsProvider value={siteDetails}>
             {children}
