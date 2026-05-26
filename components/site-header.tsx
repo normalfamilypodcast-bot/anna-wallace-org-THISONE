@@ -10,7 +10,7 @@ import { InstagramIcon } from '@/components/icons/instagram-icon'
 import { YouTubeIcon } from '@/components/icons/youtube-icon'
 
 const navLinks = [
-  { href: '/work-with-anna', label: 'Work with Anna' },
+  { href: '/work-with-anna', label: 'Work with me' },
   { href: '/podcast', label: 'A Normal Family' },
   { href: '/resources', label: 'Resources' },
   { href: '/contact', label: 'Contact' },

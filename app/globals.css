@@ -124,3 +124,11 @@
     font-family: var(--font-serif);
   }
 }
+
+/* Ensure Tailwind font-serif utility uses our Playfair variable */
+.font-serif {
+  font-family: var(--font-serif) !important;
+}
+.font-sans {
+  font-family: var(--font-sans) !important;
+}

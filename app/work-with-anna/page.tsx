@@ -35,7 +35,7 @@ export default async function WorkWithAnnaPage() {
               <p className="text-lg text-muted-foreground leading-relaxed">There are a few ways we can work together — one-to-one, in a group, or in your organisation. All of them start from the same place: helping you understand yourself better so you can have better relationships and a happier life.</p>
             </div>
             <div className="relative min-h-[50vw] md:min-h-full order-1 md:order-2">
-              <Image src="https://res.cloudinary.com/dhngfy4p6/image/upload/wwme-hero" alt="Anna Wallace" fill className="object-cover object-top" priority />
+              <Image src="https://res.cloudinary.com/dhngfy4p6/image/upload/v1775587122/448CEC65-3B2B-4DF2-B294-1A45ACEA374E_1_105_c_qwppoj.jpg" alt="Anna Wallace" fill className="object-cover object-top" priority />
             </div>
           </div>
         </div>
