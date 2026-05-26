@@ -85,7 +85,7 @@ const DOMAIN = 'annawallace.org'
 const SITE_DETAILS = {
   domain: DOMAIN,
   canonicalUrl: `https://${DOMAIN}`,
-  logoPath: '/images/a-normal-family-logo.jpg',
+  logoPath: 'https://res.cloudinary.com/dhngfy4p6/image/upload/v1775587122/448CEC65-3B2B-4DF2-B294-1A45ACEA374E_1_105_c_qwppoj.jpg',
 };
 
 export async function getContactDetails(): Promise<ContactDetails> {
