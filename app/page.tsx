@@ -109,7 +109,7 @@ export default async function Home() {
                 </p>
                 <div className="flex flex-wrap gap-4">
                   <Button asChild size="lg" className="rounded-none px-8">
-                    <Link href="/work-with-anna">Work with Anna</Link>
+                   <Link href="/work-with-anna">Work with me</Link>
                   </Button>
                   <SubscribeModal sources={podcastDetails.sources}>
                     <Button variant="outline" size="lg" className="rounded-none px-8">
@@ -135,11 +135,11 @@ export default async function Home() {
           </div>
         </section>
 
-        {/* ── WORK WITH ANNA ── */}
+        {/* ── WORK WITH ME ── */}
         <section className="bg-secondary/50 py-20 md:py-28">
           <div className="container mx-auto px-4 max-w-6xl">
             <h2 className="text-4xl md:text-5xl font-serif text-foreground mb-4 text-balance">
-              Work with Anna
+             Work with me
             </h2>
             <p className="text-muted-foreground text-lg mb-16 max-w-xl">
               Whether you want to go deeper on your own, explore in a group, or listen in — there are a few ways we can work together.
@@ -233,7 +233,7 @@ export default async function Home() {
 
               <div className="relative aspect-square max-w-xs mx-auto md:ml-auto">
                 <Image
-                  src="/images/a-normal-family-logo.jpg"
+                 src="https://res.cloudinary.com/dhngfy4p6/image/upload/v1776286074/podast_kxjeb8.jpg"
                   alt="A Normal Family Podcast"
                   fill
                   className="object-cover"
