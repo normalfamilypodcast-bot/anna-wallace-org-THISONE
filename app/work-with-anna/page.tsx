@@ -94,7 +94,7 @@ export default async function WorkWithAnnaPage() {
           <div className="mt-16 border-t border-border pt-12">
             <p className="text-xs font-medium tracking-[0.2em] uppercase text-muted-foreground mb-8">Upcoming event</p>
             <div className="grid md:grid-cols-2 gap-12 items-center">
-              <div className="relative aspect-[4/3] overflow-hidden bg-muted">
+              <div className="relative aspect-square overflow-hidden bg-muted">
                 <Image
                   src="https://images.lumacdn.com/cdn-cgi/image/format=auto,fit=cover,dpr=2,background=white,quality=75,width=400,height=400/uploads/ek/7cd59f09-82f5-40c9-a159-88b30b78f94f.jpg"
                   alt="Reframe Your World — guided journaling workshop at Eritage, Lisbon"
