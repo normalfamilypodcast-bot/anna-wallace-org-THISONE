@@ -132,37 +132,43 @@ export default async function PodcastPage() {
       <div className="min-h-screen bg-background">
         <SiteHeader />
 
-      {/* Hero Banner */}
-      <div className="relative w-full h-64 md:h-96 overflow-hidden">
-        <Image
-          src="https://res.cloudinary.com/dhngfy4p6/image/upload/v1776862078/A_Normal_Family_a4esw0.png"
-          alt="A Normal Family Podcast"
-          fill
-          className="object-cover object-center"
-          priority
-        />
-      </div>
-
-      {/* Podcast Description & CTA */}
-      <section className="container mx-auto px-4 py-8 md:py-12 max-w-4xl">
-        <div className="text-center space-y-6">
-          <div className="space-y-3 text-base md:text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-            <p>
-              Hosted by Anna - an interviewer and former corporate affairs leader - each episode explores how early stories shape who we become and how we can choose to rewrite them.
-            </p>
-            <p>
-              If you think you have a story to share or would like to partner with the show, I&apos;d love to hear from you.
-            </p>
-          </div>
-          <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
-            <SubscribeModal sources={sources}>
-              <Button size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90">
-                Subscribe Now
-              </Button>
-            </SubscribeModal>
-            <Button asChild size="lg" variant="outline" className="border-border text-foreground">
-              <a href="/contact">Share your story</a>
-            </Button>
+      {/* Hero */}
+      <section className="bg-secondary/40 py-16 md:py-24">
+        <div className="container mx-auto px-4 max-w-6xl">
+          <div className="grid md:grid-cols-2 gap-12 md:gap-20 items-center">
+            <div>
+              <p className="text-xs font-medium tracking-[0.2em] uppercase text-muted-foreground mb-6">
+                A Normal Family
+              </p>
+              <h1 className="text-4xl md:text-5xl font-serif text-foreground leading-tight mb-6 text-balance">
+                True stories about family life
+              </h1>
+              <p className="text-lg text-muted-foreground leading-relaxed mb-4">
+                I started A Normal Family because I wanted to tell the stories we usually keep to ourselves.
+              </p>
+              <p className="text-lg text-muted-foreground leading-relaxed mb-10">
+                Each episode is a real conversation about the patterns we inherit, the secrets we carry, and how we find our way through.
+              </p>
+              <div className="flex flex-wrap gap-4">
+                <SubscribeModal sources={sources}>
+                  <Button size="lg" className="rounded-none px-8">
+                    Listen now
+                  </Button>
+                </SubscribeModal>
+                <Button asChild size="lg" variant="outline" className="rounded-none px-8">
+                  <a href="/contact">Share your story</a>
+                </Button>
+              </div>
+            </div>
+            <div className="relative aspect-square max-w-sm mx-auto md:ml-auto">
+              <Image
+                src="https://res.cloudinary.com/dhngfy4p6/image/upload/v1776862078/A_Normal_Family_a4esw0.png"
+                alt="A Normal Family Podcast"
+                fill
+                className="object-contain"
+                priority
+              />
+            </div>
           </div>
         </div>
       </section>

@@ -10,12 +10,11 @@ type ContactInfoProps = {
 export const ContactInfo = ({ email }: ContactInfoProps) => {
   return (
     <div>
-      <h1 className="text-4xl md:text-5xl font-serif text-foreground mb-6">
-        Get in Touch
-      </h1>
+      <h2 className="text-4xl md:text-5xl font-serif text-foreground mb-6">
+        Say hello
+      </h2>
       <p className="text-lg text-muted-foreground mb-12 leading-relaxed">
-        For media inquiries, speaking requests, partnerships, or general questions, 
-        please fill out the form or contact me directly using the information below.
+        For speaking, media, coaching enquiries, or anything else — fill in the form or email me directly.
       </p>
 
       <div className="space-y-6">

@@ -121,14 +121,18 @@
   }
 }
 
-body {
+body, button, input, textarea, select, p, a, li, span, label {
   font-family: var(--font-nunito), Nunito, sans-serif;
 }
 
-h1, h2, h3, h4 {
+h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-playfair), "Playfair Display", Georgia, serif;
 }
 
-.font-serif {
+.font-serif, blockquote {
   font-family: var(--font-playfair), "Playfair Display", Georgia, serif;
+}
+
+.font-sans {
+  font-family: var(--font-nunito), Nunito, sans-serif;
 }
