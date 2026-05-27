@@ -132,14 +132,14 @@ export default async function PodcastPage() {
         <SiteHeader />
 
       {/* Hero */}
-      <section className="bg-secondary/40 py-16 md:py-24">
+      <section className="overflow-hidden">
         <div className="container mx-auto px-4 max-w-6xl">
-          <div className="grid md:grid-cols-2 gap-12 md:gap-20 items-center">
-            <div>
-              <p className="text-xs font-medium tracking-[0.2em] uppercase text-muted-foreground mb-6">
+          <div className="grid md:grid-cols-2 min-h-[70vh] items-stretch">
+            <div className="flex flex-col justify-center py-16 md:py-24 md:pr-16 order-2 md:order-1">
+              <p className="text-xs font-medium tracking-[0.2em] uppercase text-muted-foreground mb-8">
                 A Normal Family
               </p>
-              <h1 className="text-4xl md:text-5xl font-serif text-foreground leading-tight mb-6 text-balance">
+              <h1 className="text-4xl md:text-5xl font-serif text-foreground leading-[1.1] mb-6 text-balance">
                 True stories about family life
               </h1>
               <p className="text-lg text-muted-foreground leading-relaxed mb-4">
@@ -159,13 +159,12 @@ export default async function PodcastPage() {
                 </Button>
               </div>
             </div>
-            <div className="flex items-center justify-center md:justify-end">
+            <div className="relative min-h-[55vw] md:min-h-full order-1 md:order-2">
               <Image
                 src="https://res.cloudinary.com/dhngfy4p6/image/upload/v1776862078/A_Normal_Family_a4esw0.png"
                 alt="A Normal Family Podcast"
-                width={360}
-                height={360}
-                className="w-64 h-64 md:w-80 md:h-80 object-contain"
+                fill
+                className="object-cover object-center"
                 priority
               />
             </div>

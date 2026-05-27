@@ -89,6 +89,32 @@ export default async function WorkWithAnnaPage() {
               </div>
             </div>
           </div>
+
+          {/* Upcoming event card */}
+          <div className="mt-16 border-t border-border pt-12">
+            <p className="text-xs font-medium tracking-[0.2em] uppercase text-muted-foreground mb-8">Upcoming event</p>
+            <div className="grid md:grid-cols-2 gap-12 items-center">
+              <div className="relative aspect-[4/3] overflow-hidden bg-muted">
+                <Image
+                  src="https://images.lumacdn.com/cdn-cgi/image/format=auto,fit=cover,dpr=2,background=white,quality=75,width=400,height=400/uploads/ek/7cd59f09-82f5-40c9-a159-88b30b78f94f.jpg"
+                  alt="Reframe Your World — guided journaling workshop at Eritage, Lisbon"
+                  fill
+                  className="object-cover"
+                />
+              </div>
+              <div>
+                <h3 className="text-2xl md:text-3xl font-serif text-foreground mb-2">Reframe Your World</h3>
+                <p className="text-sm text-muted-foreground mb-6">Wednesday 3 June 2026 · 19:00–20:30 · Eritage Gallery, Lisbon · €16</p>
+                <div className="space-y-4 text-muted-foreground leading-relaxed mb-8">
+                  <p>Is a relationship you care about asking for your attention? This intimate guided workshop gives you space to pause, reflect, and look at it with fresh eyes.</p>
+                  <p>We draw on the themes of ERITAGE's current exhibition on identity, heritage and belonging. You'll leave with one practical step to make things better.</p>
+                </div>
+                <Button asChild size="lg" className="rounded-none px-8">
+                  <a href="https://luma.com/60ff6vik" target="_blank" rel="noopener noreferrer">Get your ticket — €16</a>
+                </Button>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
