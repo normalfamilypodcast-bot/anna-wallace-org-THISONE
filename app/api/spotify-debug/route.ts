@@ -1,4 +1,3 @@
-// Temporary debug endpoint — remove after Spotify is confirmed working
 export const dynamic = 'force-dynamic'
 
 export async function GET() {
@@ -7,11 +6,14 @@ export async function GET() {
   const showId = '0uvoKMauD0FUN7agYgzyVf'
 
   if (!clientId || !clientSecret) {
-    return Response.json({ error: 'Missing env vars', clientId: !!clientId, clientSecret: !!clientSecret })
+    return Response.json({
+      error: 'Missing env vars',
+      hasClientId: !!clientId,
+      hasClientSecret: !!clientSecret,
+    })
   }
 
   try {
-    // Step 1: get token
     const tokenRes = await fetch('https://accounts.spotify.com/api/token', {
       method: 'POST',
       headers: {
@@ -21,29 +23,53 @@ export async function GET() {
       body: 'grant_type=client_credentials',
       cache: 'no-store',
     })
-    const tokenBody = await tokenRes.json()
+
+    // Read raw text first so we can see exactly what Spotify returned
+    const rawToken = await tokenRes.text()
+
     if (!tokenRes.ok) {
-      return Response.json({ step: 'token', status: tokenRes.status, body: tokenBody })
+      return Response.json({
+        step: 'token_failed',
+        status: tokenRes.status,
+        rawResponse: rawToken,
+        clientIdPrefix: clientId.slice(0, 6),
+        clientSecretPrefix: clientSecret.slice(0, 6),
+      })
     }
 
-    // Step 2: fetch episodes
-    const episodesRes = await fetch(
-      `https://api.spotify.com/v1/shows/${showId}/episodes?limit=5&market=GB`,
+    let tokenData: { access_token: string }
+    try {
+      tokenData = JSON.parse(rawToken)
+    } catch {
+      return Response.json({
+        step: 'token_parse_failed',
+        status: tokenRes.status,
+        rawResponse: rawToken,
+      })
+    }
+
+    // Fetch episodes
+    const epRes = await fetch(
+      `https://api.spotify.com/v1/shows/${showId}/episodes?limit=3&market=GB`,
       {
-        headers: { Authorization: `Bearer ${tokenBody.access_token}` },
+        headers: { Authorization: `Bearer ${tokenData.access_token}` },
         cache: 'no-store',
       }
     )
-    const episodesBody = await episodesRes.json()
+    const rawEp = await epRes.text()
+
+    if (!epRes.ok) {
+      return Response.json({ step: 'episodes_failed', status: epRes.status, rawResponse: rawEp })
+    }
+
+    const epData = JSON.parse(rawEp)
     return Response.json({
-      step: 'episodes',
-      status: episodesRes.status,
-      total: episodesBody.total,
-      count: episodesBody.items?.length,
-      first: episodesBody.items?.[0]?.name,
-      error: episodesBody.error,
+      step: 'ok',
+      total: epData.total,
+      count: epData.items?.length,
+      first: epData.items?.[0]?.name,
     })
   } catch (e: unknown) {
-    return Response.json({ error: String(e) })
+    return Response.json({ step: 'exception', error: String(e) })
   }
 }
