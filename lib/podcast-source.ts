@@ -1,20 +1,6 @@
-import { fetchShowEpisodes, type SpotifyEpisode } from './client/spotify'
-import {
-  getPodcastDetails,
-  SPOTIFY,
-} from '@/lib/contact-source';
-import type { PodcastSource } from '@/types/contact-details';
-import podcastSourcesData from '@/data/podcast-sources.json';
-
-interface EpisodeSourceEntry {
-  episodeId: string;
-  sources: Record<string, string>[];
-}
-
-// Type the imported JSON data - handle single object or array
-const episodeSources: EpisodeSourceEntry[] = Array.isArray(podcastSourcesData) 
-  ? podcastSourcesData 
-  : [podcastSourcesData];
+import 'server-only'
+import { getPodcastDetails } from '@/lib/contact-source'
+import type { PodcastSource } from '@/types/contact-details'
 
 export interface PodcastEpisode {
   id: string
@@ -28,120 +14,112 @@ export interface PodcastEpisode {
   audioUrls: PodcastSource[]
 }
 
-// Cache the access token to avoid repeated auth calls
-let cachedToken: { token: string; expiresAt: number } | null = null
+function parseDuration(raw: string): string {
+  if (!raw) return ''
+  if (raw.includes(':')) return raw
+  const secs = parseInt(raw, 10)
+  if (isNaN(secs)) return raw
+  const h = Math.floor(secs / 3600)
+  const m = Math.floor((secs % 3600) / 60)
+  const s = secs % 60
+  return h > 0
+    ? `${h}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`
+    : `${m}:${String(s).padStart(2, '0')}`
+}
 
-async function getSpotifyAccessToken(): Promise<string> {
-  // Return cached token if still valid
-  if (cachedToken && cachedToken.expiresAt > Date.now()) {
-    return cachedToken.token
-  }
+function stripHtml(html: string): string {
+  return html
+    .replace(/<[^>]+>/g, '')
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&#39;/g, "'")
+    .replace(/&quot;/g, '"')
+    .trim()
+}
 
-  const clientId = process.env.SPOTIFY_CLIENT_ID
-  const clientSecret = process.env.SPOTIFY_CLIENT_SECRET
-
-  if (!clientId || !clientSecret) {
-    throw new Error('Spotify credentials not configured')
-  }
-
-  const response = await fetch('https://accounts.spotify.com/api/token', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-      'Authorization': 'Basic ' + Buffer.from(clientId + ':' + clientSecret).toString('base64')
-    },
-    body: 'grant_type=client_credentials',
-    next: { revalidate: 3600 } // Cache for 1 hour
+async function fetchEpisodesFromRss(rssUrl: string, availableSources: PodcastSource[]): Promise<PodcastEpisode[]> {
+  const res = await fetch(rssUrl, {
+    next: { revalidate: 3600 },
+    headers: { 'User-Agent': 'Mozilla/5.0 (compatible; annawallace.org/1.0)' },
   })
+  if (!res.ok) throw new Error(`RSS fetch failed: ${res.status}`)
 
-  if (!response.ok) {
-    throw new Error('Failed to get Spotify access token')
-  }
+  const xml = await res.text()
+  const items = [...xml.matchAll(/<item>([\s\S]*?)<\/item>/g)]
 
-  const data: any = await response.json() // Assuming SpotifyTokenResponse type is already defined
-  
-  // Cache the token with expiry
-  cachedToken = {
-    token: data.access_token,
-    expiresAt: Date.now() + (data.expires_in * 1000) - 60000 // Expire 1 min early
-  }
+  // Get show-level cover image as fallback
+  const showCover = xml.match(/<itunes:image[^>]+href="([^"]+)"/)?.[1]
 
-  return data.access_token
-}
+  const spotify = availableSources.find(s => s.id === 'spotify')
 
-function formatDuration(ms: number): string {
-  const minutes = Math.floor(ms / 60000)
-  return `${minutes} min`
-}
+  return items.map((match, i) => {
+    const block = match[1]
 
-function getEpisodeAudioUrls(episodeId: string, spotifyUrl: string, availableSources: PodcastSource[]): PodcastSource[] {
-  // Start with Spotify as the base source
-  const audioUrls: PodcastSource[] = [{
-    ...SPOTIFY,
-    url: spotifyUrl
-  }];
+    const title =
+      block.match(/<title><!\[CDATA\[(.*?)\]\]><\/title>/)?.[1] ??
+      block.match(/<title>(.*?)<\/title>/)?.[1] ??
+      `Episode ${items.length - i}`
 
-  // Find additional sources from the JSON data
-  const episodeEntry = episodeSources.find(entry => entry.episodeId === episodeId);
-  
-  if (episodeEntry) {
-    for (const sourceObj of episodeEntry.sources) {
-      const [sourceKey, sourceUrl] = Object.entries(sourceObj)[0];
+    const desc =
+      block.match(/<description><!\[CDATA\[([\s\S]*?)\]\]><\/description>/)?.[1] ??
+      block.match(/<description>([\s\S]*?)<\/description>/)?.[1] ??
+      ''
 
-      // Find the matching source from available sources
-      const matchingSource = availableSources.find(s => s.id === sourceKey);
-      
-      if (matchingSource && sourceUrl) {
-        audioUrls.push({
-          ...matchingSource,
-          url: sourceUrl
-        });
-      }
+    const audioUrl = block.match(/<enclosure[^>]+url="([^"]+)"/)?.[1] ?? ''
+
+    const coverImage =
+      block.match(/<itunes:image[^>]+href="([^"]+)"/)?.[1] ??
+      showCover
+
+    const duration = parseDuration(
+      block.match(/<itunes:duration>(.*?)<\/itunes:duration>/)?.[1] ?? ''
+    )
+
+    const pubDate = block.match(/<pubDate>(.*?)<\/pubDate>/)?.[1] ?? ''
+    const guid = block.match(/<guid[^>]*>(.*?)<\/guid>/)?.[1] ?? String(i)
+
+    const audioUrls: PodcastSource[] = []
+    if (audioUrl) {
+      audioUrls.push({ id: 'direct', name: 'Listen', url: audioUrl, icon: 'rss', cta: 'Listen now' })
     }
-  }
+    if (spotify) audioUrls.push(spotify)
 
-  return audioUrls;
-}
-
-function transformSpotifyEpisode(episode: SpotifyEpisode, episodeNumber: number, availableSources: PodcastSource[]): PodcastEpisode {
-  return {
-    id: episode.id,
-    number: episodeNumber,
-    title: episode.name,
-    description: episode.description,
-    htmlDescription: episode.html_description,
-    duration: formatDuration(episode.duration_ms),
-    publishedAt: episode.release_date,
-    coverImage: episode.images[0]?.url,
-    audioUrls: getEpisodeAudioUrls(episode.id, episode.external_urls.spotify, availableSources)
-  }
+    return {
+      id: guid,
+      number: items.length - i,
+      title,
+      description: stripHtml(desc),
+      htmlDescription: desc,
+      duration,
+      publishedAt: pubDate,
+      coverImage,
+      audioUrls,
+    }
+  })
 }
 
 async function fetchEpisodes(): Promise<PodcastEpisode[]> {
   try {
-    const { spotifyShowId: showId, sources: availableSources } = await getPodcastDetails();
-
-    const data = await fetchShowEpisodes(showId, 50)
-
-    return data.items.map((episode, index) =>
-      transformSpotifyEpisode(episode, data.items.length - index, availableSources)
-    )
-  } catch (error) {
-    console.warn('Spotify fetch failed, returning empty episode list:', error)
+    const details = await getPodcastDetails() as { rssUrl?: string; sources: PodcastSource[]; name: string; spotifyShowId: string }
+    if (!details.rssUrl) throw new Error('No rssUrl in podcast details')
+    return await fetchEpisodesFromRss(details.rssUrl, details.sources)
+  } catch (err) {
+    console.warn('Podcast RSS fetch failed:', err)
     return []
   }
 }
 
 export async function getLatestEpisode(): Promise<PodcastEpisode | null> {
-  const episodes = await fetchEpisodes()
-  return episodes[0] || null
+  const eps = await fetchEpisodes()
+  return eps[0] ?? null
 }
 
-export async function getRecentEpisodes(limit: number = 50): Promise<PodcastEpisode[]> {
-  const episodes = await fetchEpisodes()
-  return episodes.slice(1, limit + 1)
+export async function getRecentEpisodes(limit = 4): Promise<PodcastEpisode[]> {
+  const eps = await fetchEpisodes()
+  return eps.slice(1, limit + 1)
 }
 
 export async function getAllEpisodes(): Promise<PodcastEpisode[]> {
-  return await fetchEpisodes()
+  return fetchEpisodes()
 }
