@@ -2,7 +2,6 @@ import type { Metadata } from 'next'
 import { SiteHeader } from '@/components/site-header'
 import { SiteFooter } from '@/components/site-footer'
 import { Button } from '@/components/ui/button'
-import { Card } from '@/components/ui/card'
 import { getLatestEpisode, getRecentEpisodes } from '@/lib/podcast-source'
 import { ListenButton } from '@/components/listen-button'
 import { getPodcastDetails, getSiteDetails } from '@/lib/contact-source'
@@ -160,12 +159,13 @@ export default async function PodcastPage() {
                 </Button>
               </div>
             </div>
-            <div className="relative aspect-square max-w-sm mx-auto md:ml-auto">
+            <div className="flex items-center justify-center md:justify-end">
               <Image
                 src="https://res.cloudinary.com/dhngfy4p6/image/upload/v1776862078/A_Normal_Family_a4esw0.png"
                 alt="A Normal Family Podcast"
-                fill
-                className="object-contain"
+                width={360}
+                height={360}
+                className="w-64 h-64 md:w-80 md:h-80 object-contain"
                 priority
               />
             </div>
@@ -258,30 +258,27 @@ export default async function PodcastPage() {
         <div className="container mx-auto px-4 max-w-5xl">
         <div className="space-y-4 mb-12 text-center">
           <h2 className="text-4xl md:text-5xl tracking-wide text-muted-foreground text-balance">
-            Praise for podcast
+            Praise for the podcast
           </h2>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {testimonials.map((testimonial, index) => (
-            <Card
-              key={testimonial.id}
-              className={`p-6 bg-card border-border`}
-            >
-              <blockquote className="space-y-4">
-                <p className="text-muted-foreground leading-relaxed italic">
-                  &quot;{testimonial.quote}&quot;
+        <div className="grid md:grid-cols-3 gap-10">
+          {testimonials.map((testimonial) => (
+            <div key={testimonial.id} className="border-t-2 border-border pt-8">
+              <blockquote className="space-y-6">
+                <p className="text-foreground leading-relaxed text-lg font-serif italic">
+                  &ldquo;{testimonial.quote}&rdquo;
                 </p>
-                <footer className="text-sm">
-                  <cite className="not-italic font-medium text-foreground">
+                <footer>
+                  <cite className="not-italic text-sm font-medium text-foreground block">
                     {testimonial.authorName}
                   </cite>
-                  {testimonial.context &&
-                    <p className="text-muted-foreground">{testimonial.context}</p>
-                  }
+                  {testimonial.context && (
+                    <p className="text-sm text-muted-foreground mt-1">{testimonial.context}</p>
+                  )}
                 </footer>
               </blockquote>
-            </Card>
+            </div>
           ))}
         </div>
         </div>
