@@ -154,7 +154,7 @@ export default async function Home() {
                         src={`https://www.youtube.com/embed/${item.videoId}?autoplay=1&mute=1&loop=1&controls=0&playlist=${item.videoId}&playsinline=1&rel=0&modestbranding=1`}
                         title={item.title}
                         allow="autoplay; encrypted-media"
-                        className="absolute inset-0 w-full h-full pointer-events-none scale-[2.4]"
+                        className="absolute inset-0 w-full h-full pointer-events-none scale-[1.7]"
                         style={{ border: 'none' }}
                       />
                     ) : (
