@@ -4,6 +4,7 @@ export interface WhatIDoItem {
   title: string;
   description: string;
   image: Image;
+  videoId?: string;
   cta: {
     text: string;
     href: string;

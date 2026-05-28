@@ -10,6 +10,7 @@ const WHAT_I_DO: WhatIDoItem[] = [
       alt: 'Anna, coaching',
       url: 'https://res.cloudinary.com/dhngfy4p6/image/upload/v1775860767/coaching_growth-transformation-card_wfkh95.svg',
     },
+    videoId: 'kRcqBOGL1HA',
     cta: {
       text: 'Enquire about coaching',
       href: '/contact',

@@ -149,12 +149,22 @@ export default async function Home() {
               {whatIDoItems.map((item) => (
                 <div key={item.id} className="flex flex-col">
                   <div className="relative aspect-[4/3] mb-6 overflow-hidden bg-muted">
-                    <Image
-                      src={item.image.url}
-                      alt={item.image.alt}
-                      fill
-                      className="object-cover"
-                    />
+                    {item.videoId ? (
+                      <iframe
+                        src={`https://www.youtube.com/embed/${item.videoId}?autoplay=1&mute=1&loop=1&controls=0&playlist=${item.videoId}&playsinline=1&rel=0&modestbranding=1`}
+                        title={item.title}
+                        allow="autoplay; encrypted-media"
+                        className="absolute inset-0 w-full h-full pointer-events-none scale-[2.4]"
+                        style={{ border: 'none' }}
+                      />
+                    ) : (
+                      <Image
+                        src={item.image.url}
+                        alt={item.image.alt}
+                        fill
+                        className="object-cover"
+                      />
+                    )}
                   </div>
                   <h3 className="text-xl font-serif text-foreground mb-3">{item.title}</h3>
                   <p className="text-muted-foreground leading-relaxed mb-6 flex-grow text-sm">
