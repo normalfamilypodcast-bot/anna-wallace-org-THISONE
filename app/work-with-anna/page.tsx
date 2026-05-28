@@ -28,7 +28,7 @@ export default async function WorkWithAnnaPage() {
 
       <section className="overflow-hidden">
         <div className="container mx-auto px-4 max-w-6xl">
-          <div className="grid md:grid-cols-2 min-h-[60vh] items-stretch">
+          <div className="grid md:grid-cols-2 items-stretch">
             <div className="flex flex-col justify-center py-16 md:py-24 md:pr-16 order-2 md:order-1">
               <p className="text-xs font-medium tracking-[0.2em] text-muted-foreground uppercase mb-8">Coaching · Workshops · Events</p>
               <h1 className="text-4xl md:text-5xl font-serif text-foreground leading-[1.1] mb-6 text-balance">Work with me</h1>
@@ -41,7 +41,7 @@ export default async function WorkWithAnnaPage() {
               <Button asChild size="lg" className="rounded-none px-8"><Link href="/contact">Get in touch</Link></Button>
             </div>
             <div className="relative min-h-[50vw] md:min-h-full order-1 md:order-2">
-              <Image src="https://res.cloudinary.com/dhngfy4p6/image/upload/v1779801438/hf_20260523_141042_180b99a3-ce6d-4fa4-aabf-29e260120d05_kktawu.png" alt="Anna Wallace" fill className="object-cover object-top" priority />
+              <Image src="https://res.cloudinary.com/dhngfy4p6/image/upload/v1779801438/hf_20260523_141042_180b99a3-ce6d-4fa4-aabf-29e260120d05_kktawu.png" alt="Anna Wallace" fill className="object-cover object-[50%_15%]" priority />
             </div>
           </div>
         </div>
@@ -53,9 +53,9 @@ export default async function WorkWithAnnaPage() {
             <h2 className="text-3xl md:text-4xl font-serif text-foreground mb-4">Coaching</h2>
             <p className="text-lg text-muted-foreground max-w-2xl">I work with women who have done the work and are ready to step into the next chapter of their lives. I work one-to-one in virtual or in-person using positive psychology and somatic (body) approaches.</p>
           </div>
-          <div className="grid md:grid-cols-2 gap-16 items-start">
+          <div className="grid md:grid-cols-2 gap-16 items-center">
             <div>
-              <h3 className="font-serif text-xl text-foreground mb-6">My approach</h3>
+              <hr className="border-t border-foreground/40 mb-8" />
               <div className="space-y-5 text-muted-foreground leading-relaxed">
                 <p>My coaching is grounded, practical and reflective. I believe in your power to change, not through quick fixes, but through self-awareness, openness and consistent action.</p>
                 <p>I work with people who feel stuck at "what now?", often navigating change, whether chosen or unexpected, and wanting to move forward with more clarity, confidence and intention.</p>
@@ -79,7 +79,7 @@ export default async function WorkWithAnnaPage() {
 
       <section id="events" className="py-20 md:py-28 scroll-mt-20">
         <div className="container mx-auto px-4 max-w-6xl">
-          <div className="grid md:grid-cols-2 gap-16 items-start">
+          <div className="grid md:grid-cols-2 gap-16 items-center">
             <div className="relative aspect-[4/3] bg-muted overflow-hidden">
               <Image src="https://res.cloudinary.com/dhngfy4p6/image/upload/v1779970263/podast_1200_x_900_px_lradym.jpg" alt="Workshop facilitation" fill className="object-cover" />
             </div>

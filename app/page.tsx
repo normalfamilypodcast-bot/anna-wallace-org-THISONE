@@ -155,7 +155,7 @@ export default async function Home() {
                         title={item.title}
                         allow="autoplay; encrypted-media"
                         className="absolute inset-0 w-full h-full pointer-events-none"
-                        style={{ border: 'none', transform: 'scale(2.4) translateY(-8%)' }}
+                        style={{ border: 'none', transform: 'scale(2.4) translateY(8%)' }}
                       />
                     ) : (
                       <Image

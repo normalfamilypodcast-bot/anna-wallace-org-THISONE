@@ -135,7 +135,7 @@ export default async function PodcastPage() {
       {/* Hero */}
       <section className="overflow-hidden">
         <div className="container mx-auto px-4 max-w-6xl">
-          <div className="grid md:grid-cols-2 min-h-[70vh] items-stretch">
+          <div className="grid md:grid-cols-2 items-stretch">
             <div className="flex flex-col justify-center py-16 md:py-24 md:pr-16 order-2 md:order-1">
               <p className="text-xs font-medium tracking-[0.2em] uppercase text-muted-foreground mb-8">
                 A Normal Family
@@ -162,10 +162,10 @@ export default async function PodcastPage() {
             </div>
             <div className="relative min-h-[55vw] md:min-h-full order-1 md:order-2">
               <Image
-                src="https://res.cloudinary.com/dhngfy4p6/image/upload/v1779975888/updated_pod_hero_1200_x_1600_px_dr6hy9.png"
+                src="https://res.cloudinary.com/dhngfy4p6/image/upload/c_crop,w_1200,h_1100,y_0/v1779975888/updated_pod_hero_1200_x_1600_px_dr6hy9.png"
                 alt="A Normal Family Podcast hero"
                 fill
-                className="object-cover object-center"
+                className="object-cover object-top"
                 priority
               />
             </div>
