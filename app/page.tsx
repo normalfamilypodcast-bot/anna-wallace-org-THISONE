@@ -94,7 +94,7 @@ export default async function Home() {
         {/* ── HERO ── */}
         <section className="overflow-hidden">
           <div className="container mx-auto px-4 max-w-6xl">
-            <div className="grid md:grid-cols-2 min-h-[85vh] items-stretch">
+            <div className="grid md:grid-cols-2 md:min-h-[85vh] items-stretch">
 
               {/* Text */}
               <div className="flex flex-col justify-center py-16 md:py-24 md:pr-16 order-2 md:order-1">
@@ -121,7 +121,7 @@ export default async function Home() {
 
               {/* Image */}
               {biography.image && (
-                <div className="relative min-h-[55vw] md:min-h-full order-1 md:order-2">
+                <div className="relative min-h-[75vw] md:min-h-full order-1 md:order-2">
                   <Image
                     src={biography.image.url}
                     alt={biography.image.alt}

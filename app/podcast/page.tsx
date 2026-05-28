@@ -176,11 +176,11 @@ export default async function PodcastPage() {
       {/* Latest Episode */}
       <section className="bg-secondary py-8 md:py-10">
         <div className="container mx-auto px-4 max-w-4xl">
-          <h2 className="text-2xl md:text-3xl font-serif text-foreground mb-8">Latest Episode</h2>
+          <h2 className="text-2xl md:text-3xl font-serif text-foreground mb-8">Latest episode</h2>
           {latestEpisode && (
             <Card className="p-6 md:p-8 bg-card border-border">
               <div className="flex flex-col md:flex-row gap-6 md:gap-8">
-                <div className="w-full md:w-48 h-48 bg-muted rounded-lg flex-shrink-0 relative overflow-hidden">
+                <div className="relative w-full aspect-square md:w-48 md:aspect-auto md:h-48 bg-muted rounded-lg flex-shrink-0 overflow-hidden">
                   {latestEpisode.coverImage && (
                     <Image
                       src={latestEpisode.coverImage}
@@ -216,12 +216,12 @@ export default async function PodcastPage() {
 
       {/* Recent Episodes */}
       <section className="container mx-auto px-4 py-8 md:py-10 max-w-6xl">
-        <h2 className="text-2xl md:text-3xl font-serif text-foreground mb-8">Recent Episodes</h2>
+        <h2 className="text-2xl md:text-3xl font-serif text-foreground mb-8">Recent episodes</h2>
         <div className="grid md:grid-cols-2 gap-6 md:gap-8">
           {recentEpisodes.map((episode) => (
             <Card key={episode.id} className="p-4 md:p-6 bg-card border-border hover:shadow-lg transition-shadow overflow-hidden">
               <div className="flex flex-col sm:flex-row gap-4">
-                <div className="w-full sm:w-24 h-32 sm:h-24 bg-muted rounded flex-shrink-0 relative overflow-hidden">
+                <div className="relative w-full aspect-square sm:w-24 sm:aspect-auto sm:h-24 bg-muted rounded flex-shrink-0 overflow-hidden">
                   {episode.coverImage && (
                     <Image
                       src={episode.coverImage}
