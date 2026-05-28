@@ -22,7 +22,7 @@ const WHAT_I_DO: WhatIDoItem[] = [
     description: 'A Normal Family is a podcast of true family stories to help you recognise your own patterns, feel less alone, and find new ways to heal and connect.',
     image: {
       alt: 'Podcast image',
-      url: 'https://res.cloudinary.com/dhngfy4p6/image/upload/c_fill,g_auto,ar_4:3,w_1200/v1779970291/podast_1200_x_900_px_1_odg6c9.jpg',
+      url: 'https://res.cloudinary.com/dhngfy4p6/image/upload/v1779971345/podast_1200_x_900_px_2_s5i8zq.jpg',
     },
     cta: {
       text: 'Listen now',
