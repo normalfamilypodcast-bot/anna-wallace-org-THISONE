@@ -5,7 +5,7 @@ const WHAT_I_DO: WhatIDoItem[] = [
   {
     id: '1',
     title: 'Coaching',
-    description: `One-to-one coaching for people who feel stuck at "what now?" — navigating change, wanting to move forward with more clarity, confidence and intention. This is where we start.`,
+    description: `One-to-one coaching for people who feel stuck at "what now?", navigating change, wanting to move forward with more clarity, confidence and intention. This is where we start.`,
     image: {
       alt: 'Anna, coaching',
       url: 'https://res.cloudinary.com/dhngfy4p6/image/upload/v1775860767/coaching_growth-transformation-card_wfkh95.svg',
@@ -32,7 +32,7 @@ const WHAT_I_DO: WhatIDoItem[] = [
   {
     id: '3',
     title: 'Workshops and events',
-    description: `Workshops for people who want to slow down and look at themselves honestly — their patterns, their relationships, the role they play in them. Available for businesses, community groups, and private events.`,
+    description: `Workshops for people who want to slow down and look at themselves honestly, looking at their patterns, their relationships, the role they play in them. Available for businesses, community groups, and private events.`,
     image: {
       alt: 'Workshop facilitation',
       url: 'https://res.cloudinary.com/dhngfy4p6/image/upload/v1779970263/podast_1200_x_900_px_lradym.jpg',

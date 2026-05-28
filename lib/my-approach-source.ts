@@ -19,7 +19,7 @@ const MY_APPROACH: MyApproachItem[] = [
   {
     id: '4',
     title: 'Clear Communication',
-    description: 'I use language that people can understand and relate to—human, compassionate, with a global mindset. No jargon, just connection.',
+    description: 'I use language that people can understand and relate to: human, compassionate, with a global mindset. No jargon, just connection.',
   },
 ];
 

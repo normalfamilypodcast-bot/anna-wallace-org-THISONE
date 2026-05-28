@@ -8,7 +8,7 @@ const EVENTS: Event[] = [
     description: `
       <p>
         Is a relationship you care about asking for your attention? This intimate guided workshop is for anyone
-        who wants to pause, reflect, and look at a relationship with fresh eyes — whether it&apos;s a partner,
+        who wants to pause, reflect, and look at a relationship with fresh eyes, whether it&apos;s a partner,
         family member, friend, or colleague.
       </p>
       <br/>
@@ -45,7 +45,7 @@ const EVENTS: Event[] = [
     },
     image: {
       url: 'https://images.lumacdn.com/cdn-cgi/image/format=auto,fit=cover,dpr=2,background=white,quality=75,width=400,height=400/uploads/ek/7cd59f09-82f5-40c9-a159-88b30b78f94f.jpg',
-      alt: 'Reframe Your World — guided journaling workshop at Eritage, Lisbon',
+      alt: 'Reframe Your World, guided journaling workshop at Eritage, Lisbon',
     },
   },
   {

@@ -102,7 +102,7 @@ export default async function Home() {
                   Speaker · Coach · Podcast Host
                 </p>
                 <h1 className="text-5xl md:text-6xl font-serif text-foreground leading-[1.1] mb-6 text-balance">
-                  The stories you tell yourself — some of them aren't true.
+                  The stories you tell yourself. Some of them aren't true.
                 </h1>
                 <p className="text-lg text-muted-foreground leading-relaxed mb-10 max-w-md">
                   Hello, I'm Anna Wallace and I help people understand themselves so they can have better relationships and happier lives.
@@ -142,7 +142,7 @@ export default async function Home() {
              Work with me
             </h2>
             <p className="text-muted-foreground text-lg mb-16 max-w-xl">
-              Whether you want to go deeper on your own, explore in a group, or listen in — there are a few ways we can work together.
+              Whether you want to go deeper on your own, explore in a group, or listen in. There are a few ways we can work together.
             </p>
 
             <div className="grid md:grid-cols-3 gap-10">

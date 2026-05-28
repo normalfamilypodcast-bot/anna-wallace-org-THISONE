@@ -14,7 +14,7 @@ export default async function ResourcesPage() {
       <section className="container mx-auto px-4 py-8 md:py-12 max-w-5xl">
         <div className="space-y-6 mb-12">
           <h1 className="text-4xl md:text-5xl tracking-wide text-muted-foreground text-balance">
-            Reading List
+            Reading list
           </h1>
           <p className="text-lg text-muted-foreground leading-relaxed max-w-3xl">
             A curated collection of books that have shaped my thinking on family, storytelling, 

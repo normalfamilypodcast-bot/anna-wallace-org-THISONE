@@ -14,7 +14,7 @@ export const ContactInfo = ({ email }: ContactInfoProps) => {
         Say hello
       </h2>
       <p className="text-lg text-muted-foreground mb-12 leading-relaxed">
-        For speaking, media, coaching enquiries, or anything else — fill in the form or email me directly.
+        For speaking, media, coaching enquiries, or anything else, fill in the form or email me directly.
       </p>
 
       <div className="space-y-6">
