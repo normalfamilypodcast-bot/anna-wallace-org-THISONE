@@ -77,7 +77,7 @@ const CONTACT_DETAILS = {
 const PODCAST_DETAILS = {
   name: 'A Normal Family',
   spotifyShowId: '0uvoKMauD0FUN7agYgzyVf',
-  rssUrl: 'https://anchor.fm/s/105d16338/podcast/rss',
+  rssUrl: 'https://media.rss.com/a-normal-family/feed.xml',
   sources: PODCAST_SOURCES,
 }
 
