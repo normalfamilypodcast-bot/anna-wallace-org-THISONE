@@ -150,11 +150,9 @@ export default async function PodcastPage() {
                 Each episode is a real conversation about the patterns we inherit, the secrets we carry, and how we find our way through.
               </p>
               <div className="flex flex-wrap gap-4">
-                <SubscribeModal sources={sources}>
-                  <Button size="lg" className="rounded-none px-8">
-                    Listen now
-                  </Button>
-                </SubscribeModal>
+                <Button asChild size="lg" className="rounded-none px-8">
+                  <a href="#platforms">Listen now</a>
+                </Button>
                 <Button asChild size="lg" variant="outline" className="rounded-none px-8">
                   <a href="/contact">Share your story</a>
                 </Button>
@@ -285,7 +283,7 @@ export default async function PodcastPage() {
       </section>
 
       {/* Subscribe CTA */}
-      <section className="bg-primary text-primary-foreground py-8 md:py-10">
+      <section id="platforms" className="bg-primary text-primary-foreground py-8 md:py-10">
         <div className="container mx-auto px-4 max-w-3xl text-center">
           <h2 className="text-2xl md:text-3xl font-serif mb-4 md:mb-6 text-balance">
             Never miss an episode

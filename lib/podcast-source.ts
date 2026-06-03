@@ -51,8 +51,6 @@ async function fetchEpisodesFromRss(rssUrl: string, availableSources: PodcastSou
   // Get show-level cover image as fallback
   const showCover = xml.match(/<itunes:image[^>]+href="([^"]+)"/)?.[1]
 
-  const spotify = availableSources.find(s => s.id === 'spotify')
-
   return items.map((match, i) => {
     const block = match[1]
 
@@ -83,7 +81,7 @@ async function fetchEpisodesFromRss(rssUrl: string, availableSources: PodcastSou
     if (audioUrl) {
       audioUrls.push({ id: 'direct', name: 'Listen', url: audioUrl, icon: 'rss', cta: 'Listen now' })
     }
-    if (spotify) audioUrls.push(spotify)
+    availableSources.forEach(s => audioUrls.push(s))
 
     return {
       id: guid,
