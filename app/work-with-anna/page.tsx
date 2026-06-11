@@ -41,7 +41,7 @@ export default async function WorkWithAnnaPage() {
               <Button asChild size="lg" className="rounded-none px-8"><Link href="/contact">Get in touch</Link></Button>
             </div>
             <div className="relative min-h-[50vw] md:min-h-full order-1 md:order-2">
-              <Image src="https://res.cloudinary.com/dhngfy4p6/image/upload/v1781213946/anna_hero_work_bjh3n1.jpg" alt="Anna Wallace" fill className="object-cover object-[50%_20%]" priority />
+              <Image src="https://res.cloudinary.com/dhngfy4p6/image/upload/v1781213946/anna_hero_work_bjh3n1.jpg" alt="Anna Wallace" fill className="object-cover object-[50%_35%]" priority />
             </div>
           </div>
         </div>

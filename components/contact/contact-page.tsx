@@ -13,10 +13,10 @@ export const ContactPageClient = () => {
     <>
       <div className="relative w-full h-64 md:h-96 overflow-hidden">
         <Image
-          src="https://res.cloudinary.com/dhngfy4p6/image/upload/v1781214133/anna_hero_contact_kdvl8f.jpg"
+          src="https://res.cloudinary.com/dhngfy4p6/image/upload/c_fill,w_1600,h_600,g_auto/v1781214133/anna_hero_contact_kdvl8f.jpg"
           alt="Sunlit forest trail"
           fill
-          className="object-cover object-[50%_25%]"
+          className="object-cover object-center"
           priority
         />
         <div className="absolute inset-0 bg-foreground/30 flex flex-col items-center justify-center text-center px-4">

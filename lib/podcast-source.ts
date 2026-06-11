@@ -66,6 +66,9 @@ async function fetchEpisodesFromRss(rssUrl: string, availableSources: PodcastSou
 
     const audioUrl = block.match(/<enclosure[^>]+url="([^"]+)"/)?.[1] ?? ''
 
+    const episodeLink =
+      block.match(/<link>(?:<!\[CDATA\[)?(.*?)(?:\]\]>)?<\/link>/)?.[1]?.trim() ?? ''
+
     const coverImage =
       block.match(/<itunes:image[^>]+href="([^"]+)"/)?.[1] ??
       showCover
@@ -78,10 +81,14 @@ async function fetchEpisodesFromRss(rssUrl: string, availableSources: PodcastSou
     const guid = block.match(/<guid[^>]*>(.*?)<\/guid>/)?.[1] ?? String(i)
 
     const audioUrls: PodcastSource[] = []
-    if (audioUrl) {
-      audioUrls.push({ id: 'direct', name: 'Listen', url: audioUrl, icon: 'rss', cta: 'Listen now' })
-    }
-    availableSources.forEach(s => audioUrls.push(s))
+    availableSources.forEach(s => {
+      // Use episode-specific link for Spotify if available from RSS <link>
+      if (s.icon === 'spotify' && episodeLink) {
+        audioUrls.push({ ...s, url: episodeLink })
+      } else {
+        audioUrls.push(s)
+      }
+    })
 
     return {
       id: guid,
