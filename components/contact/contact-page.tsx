@@ -11,20 +11,24 @@ export const ContactPageClient = () => {
 
   return (
     <>
-      <div className="relative w-full h-64 md:h-96 overflow-hidden">
-        <Image
-          src="https://res.cloudinary.com/dhngfy4p6/image/upload/c_fill,w_1600,h_600,g_auto/v1781214133/anna_hero_contact_kdvl8f.jpg"
-          alt="Sunlit forest trail"
-          fill
-          className="object-cover object-center"
-          priority
-        />
-        <div className="absolute inset-0 bg-foreground/30 flex flex-col items-center justify-center text-center px-4">
-          <h1 className="text-4xl md:text-5xl font-serif text-background mb-4">Get in touch</h1>
-          <p className="text-lg text-background/90 max-w-md">I'd love to hear from you.</p>
+      {/* Hero: portrait image gets full height in a split layout */}
+      <div className="grid md:grid-cols-2">
+        <div className="relative min-h-[75vw] md:min-h-[85vh] order-1">
+          <Image
+            src="https://res.cloudinary.com/dhngfy4p6/image/upload/v1781214133/anna_hero_contact_kdvl8f.jpg"
+            alt="Anna Wallace"
+            fill
+            className="object-cover object-[50%_20%]"
+            priority
+          />
+        </div>
+        <div className="order-2 flex flex-col justify-center bg-background px-8 md:px-16 py-14">
+          <h1 className="text-4xl md:text-5xl font-serif text-foreground mb-4">Get in touch</h1>
+          <p className="text-lg text-muted-foreground">I'd love to hear from you.</p>
         </div>
       </div>
 
+      {/* Contact content */}
       <div className="bg-background">
         <div className="container mx-auto px-4 py-12 md:py-16">
           <ContactStoryCta />
