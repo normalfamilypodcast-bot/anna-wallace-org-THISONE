@@ -1,12 +1,11 @@
 "use client"
 
 import Image from "next/image"
-import Link from "next/link"
 import { useContactDetails } from "@/providers/contact-details-provider"
 import { ContactForm } from "./contact-form"
 
 export const ContactPageClient = () => {
-  const { email } = useContactDetails()
+  // email available if needed: const { email } = useContactDetails()
 
   return (
     <div className="bg-background">
@@ -27,7 +26,7 @@ export const ContactPageClient = () => {
           </div>
 
           {/* Content */}
-          <div className="flex flex-col justify-start pt-0 md:pt-8">
+          <div className="flex flex-col justify-start">
             <h1 className="text-4xl md:text-5xl font-serif text-foreground mb-6">
               Get in touch
             </h1>
@@ -36,14 +35,7 @@ export const ContactPageClient = () => {
               Whether you're thinking about bringing a workshop or keynote to your organisation, exploring what coaching could do for you or your team, booking me to speak at an event, or sharing your family story on A Normal Family — I'd love to hear from you.
             </p>
 
-            <Link
-              href={`mailto:${email}`}
-              className="text-base font-medium text-foreground hover:underline mb-10"
-            >
-              {email}
-            </Link>
-
-            <ContactForm />
+<ContactForm />
 
             <p className="text-sm text-muted-foreground mt-8">
               Want to be a guest on A Normal Family?{" "}
