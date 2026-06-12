@@ -32,7 +32,7 @@ export const ContactPageClient = () => {
             </h1>
 
             <p className="text-lg text-muted-foreground leading-relaxed mb-8">
-              Whether you're here to rewrite your own story through coaching, to help your organisation understand the stories shaping how your teams work together, to book me for a talk or event, or to share your story on the podcast — I'd love to hear from you.
+              Whether you're here to rewrite your story through coaching, or organise an event to help people or your team improve their relationships, I'd love to hear from you.
             </p>
 
 <ContactForm />
