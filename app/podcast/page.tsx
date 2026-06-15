@@ -134,7 +134,7 @@ export default async function PodcastPage() {
       <section className="overflow-hidden">
         <div className="container mx-auto px-4 max-w-6xl">
           <div className="grid md:grid-cols-2 items-stretch">
-            <div className="flex flex-col justify-center py-16 md:py-24 md:pr-16 order-2 md:order-1">
+            <div className="flex flex-col justify-center py-8 md:py-24 md:pr-16 order-2 md:order-1">
               <p className="text-xs font-medium tracking-[0.2em] uppercase text-muted-foreground mb-8">
                 A Normal Family
               </p>

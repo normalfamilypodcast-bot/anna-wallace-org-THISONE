@@ -29,7 +29,7 @@ export default async function WorkWithAnnaPage() {
       <section className="overflow-hidden">
         <div className="container mx-auto px-4 max-w-6xl">
           <div className="grid md:grid-cols-2 items-start">
-            <div className="flex flex-col justify-center py-16 md:py-24 md:pr-16 order-2 md:order-1">
+            <div className="flex flex-col justify-center py-8 md:py-24 md:pr-16 order-2 md:order-1">
               <p className="text-xs font-medium tracking-[0.2em] text-muted-foreground uppercase mb-8">Coaching · Workshops · Events</p>
               <h1 className="text-4xl md:text-5xl font-serif text-foreground leading-[1.1] mb-6 text-balance">Work with me</h1>
               <div className="space-y-5 text-muted-foreground leading-relaxed mb-10">
@@ -47,7 +47,7 @@ export default async function WorkWithAnnaPage() {
         </div>
       </section>
 
-      <section className="bg-secondary/50 py-20 md:py-28">
+      <section className="bg-secondary/50 py-12 md:py-20">
         <div className="container mx-auto px-4 max-w-6xl">
           <div className="mb-12">
             <h2 className="text-3xl md:text-4xl font-serif text-foreground mb-4">Coaching</h2>
