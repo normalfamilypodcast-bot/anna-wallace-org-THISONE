@@ -83,11 +83,21 @@ async function fetchEpisodesFromRss(rssUrl: string, availableSources: PodcastSou
     const audioUrls: PodcastSource[] = []
     availableSources.forEach(s => {
       if (s.icon === 'spotify' && episodeLink) {
-        // Only use the RSS link if it is a consumer-facing open.spotify.com URL.
-        // Anchor/Spotify for Podcasters feeds sometimes emit podcasters.spotify.com
-        // or anchor.fm URLs which land on the creator dashboard, not the listener page.
-        const isConsumerSpotify = episodeLink.startsWith('https://open.spotify.com/')
-        audioUrls.push({ ...s, url: isConsumerSpotify ? episodeLink : s.url })
+        // The RSS feed emits creators.spotify.com URLs (creator dashboard).
+        // Convert to anchor.fm episode URL which redirects to the correct
+        // consumer Spotify episode page.
+        // Pattern: creators.spotify.com/pod/profile/HANDLE/episodes/SLUG
+        //       → anchor.fm/HANDLE/episodes/SLUG
+        let spotifyUrl = s.url // fallback: show page
+        const creatorMatch = episodeLink.match(
+          /creators\.spotify\.com\/pod\/profile\/([^/]+)\/episodes\/(.+)/
+        )
+        if (creatorMatch) {
+          spotifyUrl = `https://anchor.fm/${creatorMatch[1]}/episodes/${creatorMatch[2]}`
+        } else if (episodeLink.startsWith('https://open.spotify.com/')) {
+          spotifyUrl = episodeLink
+        }
+        audioUrls.push({ ...s, url: spotifyUrl })
       } else if (s.icon === 'youtube') {
         // RSS feeds from Anchor/Spotify do not carry YouTube episode links.
         // Generate a channel search URL so the listener lands on the right video

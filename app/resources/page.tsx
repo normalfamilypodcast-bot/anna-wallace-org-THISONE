@@ -14,7 +14,7 @@ export default async function ResourcesPage() {
       {/* Editorial intro — image left (looks right into text), copy right */}
       <section className="container mx-auto px-4 py-12 md:py-20 max-w-6xl">
         <div className="grid md:grid-cols-2 gap-12 lg:gap-20 items-start">
-          <div className="w-full">
+          <div className="w-full md:max-h-[520px] md:overflow-hidden">
             <Image
               src="https://res.cloudinary.com/dhngfy4p6/image/upload/v1781544032/anna_resources_gallery_npuld5.jpg"
               alt="Anna Wallace at a gallery"

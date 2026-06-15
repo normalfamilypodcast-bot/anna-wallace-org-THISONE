@@ -28,7 +28,7 @@ export default async function WorkWithAnnaPage() {
 
       <section className="overflow-hidden">
         <div className="container mx-auto px-4 max-w-6xl">
-          <div className="grid md:grid-cols-2 items-stretch">
+          <div className="grid md:grid-cols-2 items-start">
             <div className="flex flex-col justify-center py-16 md:py-24 md:pr-16 order-2 md:order-1">
               <p className="text-xs font-medium tracking-[0.2em] text-muted-foreground uppercase mb-8">Coaching · Workshops · Events</p>
               <h1 className="text-4xl md:text-5xl font-serif text-foreground leading-[1.1] mb-6 text-balance">Work with me</h1>
@@ -40,8 +40,8 @@ export default async function WorkWithAnnaPage() {
               </div>
               <Button asChild size="lg" className="rounded-none px-8"><Link href="/contact">Get in touch</Link></Button>
             </div>
-            <div className="relative aspect-[2/3] md:aspect-auto md:min-h-full order-1 md:order-2">
-              <Image src="https://res.cloudinary.com/dhngfy4p6/image/upload/v1781213946/anna_hero_work_bjh3n1.jpg" alt="Anna Wallace" fill className="object-cover object-top" priority />
+            <div className="w-full order-1 md:order-2">
+              <Image src="https://res.cloudinary.com/dhngfy4p6/image/upload/v1781213946/anna_hero_work_bjh3n1.jpg" alt="Anna Wallace" width={1600} height={2400} className="w-full h-auto" priority />
             </div>
           </div>
         </div>
