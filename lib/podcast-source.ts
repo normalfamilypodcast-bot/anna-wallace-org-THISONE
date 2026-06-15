@@ -38,14 +38,6 @@ function stripHtml(html: string): string {
     .trim()
 }
 
-// Anchor.fm show handle for A Normal Family.
-// Anchor (now Spotify for Podcasters) uses `creators.spotify.com` URLs in the RSS feed,
-// but those are creator-dashboard URLs. We convert to anchor.fm episode URLs instead,
-// which redirect to the consumer Spotify episode page.
-// The handle below must match the show's slug on anchor.fm / Spotify for Podcasters.
-// If episode links break, verify the handle at https://anchor.fm/HANDLE
-const ANCHOR_SHOW_HANDLE = 'a-normal-family'
-
 // Fetch episode-level Apple Podcasts URLs via iTunes Search API (no auth required).
 // Show ID 1850937450 is from the Apple Podcasts show URL (id1850937450).
 async function fetchAppleEpisodeUrls(): Promise<Map<string, string>> {
@@ -118,19 +110,14 @@ async function fetchEpisodesFromRss(rssUrl: string, availableSources: PodcastSou
 
     const audioUrls: PodcastSource[] = []
     availableSources.forEach(s => {
-      if (s.icon === 'spotify' && episodeLink) {
-        // RSS provides creators.spotify.com/pod/profile/HANDLE/episodes/SLUG URLs.
-        // Convert to anchor.fm/SHOW_HANDLE/episodes/SLUG which redirects to the
-        // consumer Spotify episode page for regular listeners.
-        let spotifyUrl = s.url // fallback: show page
-        const creatorMatch = episodeLink.match(
-          /creators\.spotify\.com\/pod\/profile\/[^/]+\/episodes\/(.+)/
-        )
-        if (creatorMatch) {
-          spotifyUrl = `https://anchor.fm/${ANCHOR_SHOW_HANDLE}/episodes/${creatorMatch[1]}`
-        } else if (episodeLink.startsWith('https://open.spotify.com/')) {
-          spotifyUrl = episodeLink
-        }
+      if (s.icon === 'spotify') {
+        // This show has no anchor.fm handle (numeric RSS only: anchor.fm/s/113672578).
+        // Episode-level Spotify URLs require the Spotify Web API (business registration
+        // required — not available). Linking to the show page is the best option.
+        // If the RSS ever provides open.spotify.com episode URLs, use them directly.
+        const spotifyUrl = episodeLink.startsWith('https://open.spotify.com/episode/')
+          ? episodeLink
+          : s.url
         audioUrls.push({ ...s, url: spotifyUrl })
 
       } else if (s.icon === 'apple-podcasts') {
