@@ -116,7 +116,11 @@ export default async function PodcastPage() {
         return <YouTubeIcon />
       case 'rss':
         return <RssIcon />
+      default:
+        return null
+    }
   }
+
   return (
     <>
       <script

@@ -31,6 +31,9 @@ export function ListenButton({ audioUrls, episodeTitle, variant = 'default', siz
         return <SpotifyIcon />
       case 'youtube':
         return <YouTubeIcon />
+      default:
+        return null
+    }
   }
 
   // Single source - render direct link with platform icon

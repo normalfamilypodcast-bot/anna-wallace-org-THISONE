@@ -31,6 +31,9 @@ export function SubscribeModal({ sources, children }: SubscribeModalProps) {
         return <YouTubeIcon />
       case 'rss':
         return <RssIcon />
+      default:
+        return null
+    }
   }
 
   return (
