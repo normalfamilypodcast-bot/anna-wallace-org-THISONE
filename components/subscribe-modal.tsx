@@ -13,7 +13,6 @@ import { ApplePodcastIcon } from '@/components/icons/apple-podcast-icon'
 import { RssIcon } from '@/components/icons/rss-icon'
 import { SpotifyIcon } from '@/components/icons/spotify-icon'
 import { YouTubeIcon } from '@/components/icons/youtube-icon'
-import { PodcastAddictIcon } from '@/components/icons/podcast-addict-icon'
 import type { PodcastSource } from '@/types/contact-details'
 
 interface SubscribeModalProps {
@@ -32,11 +31,6 @@ export function SubscribeModal({ sources, children }: SubscribeModalProps) {
         return <YouTubeIcon />
       case 'rss':
         return <RssIcon />
-      case 'podcast-addict':
-        return <PodcastAddictIcon />
-      default:
-        return null
-    }
   }
 
   return (

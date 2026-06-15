@@ -31,19 +31,11 @@ export const YOUTUBE: PodcastSource = {
   cta: 'Watch on YouTube',
 };
 
-export const PODCAST_ADDICT: PodcastSource = {
-  id: 'podcast-addict',
-  name: 'Podcast Addict',
-  url: 'https://podcastaddict.com/podcast/a-normal-family-modern-family-life-trauma-amp-healing/6482702',
-  icon: 'podcast-addict',
-  cta: 'Listen on Podcast Addict',
-};
 
 const PODCAST_SOURCES: PodcastSource[] = [
   SPOTIFY,
   APPLE_PODCASTS,
-  YOUTUBE,
-  PODCAST_ADDICT,
+  YOUTUBE
 ];
 
 const SOCIALS = [

@@ -82,9 +82,18 @@ async function fetchEpisodesFromRss(rssUrl: string, availableSources: PodcastSou
 
     const audioUrls: PodcastSource[] = []
     availableSources.forEach(s => {
-      // Use episode-specific link for Spotify if available from RSS <link>
       if (s.icon === 'spotify' && episodeLink) {
-        audioUrls.push({ ...s, url: episodeLink })
+        // Only use the RSS link if it is a consumer-facing open.spotify.com URL.
+        // Anchor/Spotify for Podcasters feeds sometimes emit podcasters.spotify.com
+        // or anchor.fm URLs which land on the creator dashboard, not the listener page.
+        const isConsumerSpotify = episodeLink.startsWith('https://open.spotify.com/')
+        audioUrls.push({ ...s, url: isConsumerSpotify ? episodeLink : s.url })
+      } else if (s.icon === 'youtube') {
+        // RSS feeds from Anchor/Spotify do not carry YouTube episode links.
+        // Generate a channel search URL so the listener lands on the right video
+        // rather than just the channel homepage.
+        const searchUrl = `https://www.youtube.com/@anormalfamilypodcast/search?query=${encodeURIComponent(title)}`
+        audioUrls.push({ ...s, url: searchUrl })
       } else {
         audioUrls.push(s)
       }

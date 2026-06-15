@@ -12,7 +12,6 @@ import {
 import { ApplePodcastIcon } from '@/components/icons/apple-podcast-icon'
 import { SpotifyIcon } from '@/components/icons/spotify-icon'
 import { YouTubeIcon } from '@/components/icons/youtube-icon'
-import { PodcastAddictIcon } from '@/components/icons/podcast-addict-icon'
 import { Play } from 'lucide-react'
 import type { PodcastSource } from '@/types/contact-details'
 
@@ -32,11 +31,6 @@ export function ListenButton({ audioUrls, episodeTitle, variant = 'default', siz
         return <SpotifyIcon />
       case 'youtube':
         return <YouTubeIcon />
-      case 'podcast-addict':
-        return <PodcastAddictIcon />
-      default:
-        return null
-    }
   }
 
   // Single source - render direct link with platform icon
