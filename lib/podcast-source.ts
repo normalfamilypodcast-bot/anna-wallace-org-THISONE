@@ -38,11 +38,45 @@ function stripHtml(html: string): string {
     .trim()
 }
 
+// Anchor.fm show handle for A Normal Family.
+// Anchor (now Spotify for Podcasters) uses `creators.spotify.com` URLs in the RSS feed,
+// but those are creator-dashboard URLs. We convert to anchor.fm episode URLs instead,
+// which redirect to the consumer Spotify episode page.
+// The handle below must match the show's slug on anchor.fm / Spotify for Podcasters.
+// If episode links break, verify the handle at https://anchor.fm/HANDLE
+const ANCHOR_SHOW_HANDLE = 'a-normal-family'
+
+// Fetch episode-level Apple Podcasts URLs via iTunes Search API (no auth required).
+// Show ID 1850937450 is from the Apple Podcasts show URL (id1850937450).
+async function fetchAppleEpisodeUrls(): Promise<Map<string, string>> {
+  try {
+    const res = await fetch(
+      'https://itunes.apple.com/lookup?id=1850937450&media=podcast&entity=podcastEpisode&limit=200',
+      { next: { revalidate: 86400 } } // cache 24h — Apple episode URLs are stable
+    )
+    if (!res.ok) return new Map()
+    const data = await res.json()
+    const map = new Map<string, string>()
+    for (const item of (data.results ?? [])) {
+      if (item.wrapperType === 'podcastEpisode' && item.trackName && item.trackViewUrl) {
+        map.set(item.trackName.trim().toLowerCase(), item.trackViewUrl)
+      }
+    }
+    return map
+  } catch {
+    return new Map()
+  }
+}
+
 async function fetchEpisodesFromRss(rssUrl: string, availableSources: PodcastSource[]): Promise<PodcastEpisode[]> {
-  const res = await fetch(rssUrl, {
-    next: { revalidate: 3600 },
-    headers: { 'User-Agent': 'Mozilla/5.0 (compatible; annawallace.org/1.0)' },
-  })
+  const [res, appleEpisodeUrls] = await Promise.all([
+    fetch(rssUrl, {
+      next: { revalidate: 3600 },
+      headers: { 'User-Agent': 'Mozilla/5.0 (compatible; annawallace.org/1.0)' },
+    }),
+    fetchAppleEpisodeUrls(),
+  ])
+
   if (!res.ok) throw new Error(`RSS fetch failed: ${res.status}`)
 
   const xml = await res.text()
@@ -80,30 +114,37 @@ async function fetchEpisodesFromRss(rssUrl: string, availableSources: PodcastSou
     const pubDate = block.match(/<pubDate>(.*?)<\/pubDate>/)?.[1] ?? ''
     const guid = block.match(/<guid[^>]*>(.*?)<\/guid>/)?.[1] ?? String(i)
 
+    const titleKey = title.trim().toLowerCase()
+
     const audioUrls: PodcastSource[] = []
     availableSources.forEach(s => {
       if (s.icon === 'spotify' && episodeLink) {
-        // The RSS feed emits creators.spotify.com URLs (creator dashboard).
-        // Convert to anchor.fm episode URL which redirects to the correct
-        // consumer Spotify episode page.
-        // Pattern: creators.spotify.com/pod/profile/HANDLE/episodes/SLUG
-        //       → anchor.fm/HANDLE/episodes/SLUG
+        // RSS provides creators.spotify.com/pod/profile/HANDLE/episodes/SLUG URLs.
+        // Convert to anchor.fm/SHOW_HANDLE/episodes/SLUG which redirects to the
+        // consumer Spotify episode page for regular listeners.
         let spotifyUrl = s.url // fallback: show page
         const creatorMatch = episodeLink.match(
-          /creators\.spotify\.com\/pod\/profile\/([^/]+)\/episodes\/(.+)/
+          /creators\.spotify\.com\/pod\/profile\/[^/]+\/episodes\/(.+)/
         )
         if (creatorMatch) {
-          spotifyUrl = `https://anchor.fm/${creatorMatch[1]}/episodes/${creatorMatch[2]}`
+          spotifyUrl = `https://anchor.fm/${ANCHOR_SHOW_HANDLE}/episodes/${creatorMatch[1]}`
         } else if (episodeLink.startsWith('https://open.spotify.com/')) {
           spotifyUrl = episodeLink
         }
         audioUrls.push({ ...s, url: spotifyUrl })
+
+      } else if (s.icon === 'apple-podcasts') {
+        // Use iTunes Search API result for episode-specific Apple Podcasts URL.
+        // Falls back to show URL if no match found.
+        const appleUrl = appleEpisodeUrls.get(titleKey)
+        audioUrls.push({ ...s, url: appleUrl ?? s.url })
+
       } else if (s.icon === 'youtube') {
-        // RSS feeds from Anchor/Spotify do not carry YouTube episode links.
-        // Generate a channel search URL so the listener lands on the right video
-        // rather than just the channel homepage.
+        // No episode-level YouTube links without YouTube Data API.
+        // Channel search is the best available option.
         const searchUrl = `https://www.youtube.com/@anormalfamilypodcast/search?query=${encodeURIComponent(title)}`
         audioUrls.push({ ...s, url: searchUrl })
+
       } else {
         audioUrls.push(s)
       }

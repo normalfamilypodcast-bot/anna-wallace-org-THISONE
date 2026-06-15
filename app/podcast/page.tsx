@@ -158,7 +158,7 @@ export default async function PodcastPage() {
             </div>
             <div className="relative min-h-[55vw] md:min-h-full order-1 md:order-2">
               <Image
-                src="https://res.cloudinary.com/dhngfy4p6/image/upload/v1781213946/anna_hero_podcast_rqiem3.jpg"
+                src="https://res.cloudinary.com/dhngfy4p6/image/upload/v1781213946/anna_podcast_hero_new_lkgikt.jpg"
                 alt="A Normal Family Podcast hero"
                 fill
                 className="object-cover object-[50%_20%]"
