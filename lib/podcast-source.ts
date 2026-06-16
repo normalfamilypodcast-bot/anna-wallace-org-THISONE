@@ -60,13 +60,62 @@ async function fetchAppleEpisodeUrls(): Promise<Map<string, string>> {
   }
 }
 
+// A Normal Family Podcast channel ID (resolved via YouTube Data API, stable identifier).
+const YOUTUBE_CHANNEL_ID = 'UCaVQO3uKDb_A2isVkPyFGAQ'
+
+function normalizeForMatch(s: string): string {
+  return s.toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim()
+}
+
+// Fetch episode-level YouTube video URLs via YouTube Data API v3.
+// Requires YOUTUBE_API_KEY env var. Matches by fuzzy title comparison since
+// YouTube video titles are often formatted differently from RSS episode titles
+// (e.g. "Ep 12: Title | A Normal Family Podcast" vs "Title").
+async function fetchYouTubeEpisodeUrls(): Promise<{ title: string; url: string }[]> {
+  const apiKey = process.env.YOUTUBE_API_KEY
+  if (!apiKey) return []
+  try {
+    const res = await fetch(
+      `https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${YOUTUBE_CHANNEL_ID}&type=video&order=date&maxResults=50&key=${apiKey}`,
+      { next: { revalidate: 86400 } } // cache 24h
+    )
+    if (!res.ok) {
+      console.warn('YouTube API request failed:', res.status, await res.text())
+      return []
+    }
+    const data = await res.json()
+    return (data.items ?? [])
+      .filter((item: any) => item.id?.videoId && item.snippet?.title)
+      .map((item: any) => ({
+        title: item.snippet.title as string,
+        url: `https://www.youtube.com/watch?v=${item.id.videoId}`,
+      }))
+  } catch (err) {
+    console.warn('YouTube API fetch error:', err)
+    return []
+  }
+}
+
+function findYouTubeMatch(episodeTitle: string, videos: { title: string; url: string }[]): string | undefined {
+  const target = normalizeForMatch(episodeTitle)
+  if (!target) return undefined
+  for (const v of videos) {
+    const vt = normalizeForMatch(v.title)
+    if (vt.includes(target) || target.includes(vt)) {
+      return v.url
+    }
+  }
+  return undefined
+}
+
 async function fetchEpisodesFromRss(rssUrl: string, availableSources: PodcastSource[]): Promise<PodcastEpisode[]> {
-  const [res, appleEpisodeUrls] = await Promise.all([
+  const [res, appleEpisodeUrls, youtubeVideos] = await Promise.all([
     fetch(rssUrl, {
       next: { revalidate: 3600 },
       headers: { 'User-Agent': 'Mozilla/5.0 (compatible; annawallace.org/1.0)' },
     }),
     fetchAppleEpisodeUrls(),
+    fetchYouTubeEpisodeUrls(),
   ])
 
   if (!res.ok) throw new Error(`RSS fetch failed: ${res.status}`)
@@ -127,10 +176,10 @@ async function fetchEpisodesFromRss(rssUrl: string, availableSources: PodcastSou
         audioUrls.push({ ...s, url: appleUrl ?? s.url })
 
       } else if (s.icon === 'youtube') {
-        // No episode-level YouTube links without YouTube Data API.
-        // Channel search is the best available option.
-        const searchUrl = `https://www.youtube.com/@anormalfamilypodcast/search?query=${encodeURIComponent(title)}`
-        audioUrls.push({ ...s, url: searchUrl })
+        // Match via YouTube Data API results (fuzzy title match).
+        // Falls back to channel page if no API key or no match found.
+        const ytUrl = findYouTubeMatch(title, youtubeVideos)
+        audioUrls.push({ ...s, url: ytUrl ?? s.url })
 
       } else {
         audioUrls.push(s)
