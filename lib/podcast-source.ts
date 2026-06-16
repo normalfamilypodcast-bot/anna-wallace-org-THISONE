@@ -63,6 +63,16 @@ async function fetchAppleEpisodeUrls(): Promise<Map<string, string>> {
 // A Normal Family Podcast channel ID (resolved via YouTube Data API, stable identifier).
 const YOUTUBE_CHANNEL_ID = 'UCaVQO3uKDb_A2isVkPyFGAQ'
 
+// Every channel's "uploads" playlist ID is the channel ID with the UC prefix
+// swapped for UU - a long-standing, stable YouTube convention. Using the
+// uploads playlist (playlistItems.list, 1 quota unit/page) instead of
+// search.list (100 quota units/call, and only returns the 50 *most recent*
+// videos) lets us paginate back through the channel's full upload history,
+// which matters here since the channel posts shorts/clips far more often
+// than full episodes - the 50 most recent videos didn't reach back to the
+// show's earlier episodes.
+const UPLOADS_PLAYLIST_ID = 'UU' + YOUTUBE_CHANNEL_ID.slice(2)
+
 function normalizeForMatch(s: string): string {
   return s.toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim()
 }
@@ -117,28 +127,44 @@ async function fetchYouTubeEpisodeUrls(): Promise<YouTubeVideo[]> {
     console.warn('[youtube-sync] YOUTUBE_API_KEY is not set in this environment — skipping YouTube episode matching')
     return []
   }
+
+  const videos: YouTubeVideo[] = []
+  let pageToken: string | undefined = undefined
+
   try {
-    const res = await fetch(
-      `https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${YOUTUBE_CHANNEL_ID}&type=video&order=date&maxResults=50&key=${apiKey}`,
-      { next: { revalidate: 86400 } } // cache 24h
-    )
-    if (!res.ok) {
-      console.warn('[youtube-sync] YouTube API request failed:', res.status, await res.text())
-      return []
-    }
-    const data = await res.json()
-    const videos = (data.items ?? [])
-      .filter((item: any) => item.id?.videoId && item.snippet?.title)
-      .map((item: any) => ({
-        title: item.snippet.title as string,
-        url: `https://www.youtube.com/watch?v=${item.id.videoId}`,
-        publishedAt: item.snippet.publishedAt as string,
-      }))
-    console.log(`[youtube-sync] fetched ${videos.length} videos from channel ${YOUTUBE_CHANNEL_ID}`)
+    do {
+      const url =
+        `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${UPLOADS_PLAYLIST_ID}&maxResults=50&key=${apiKey}` +
+        (pageToken ? `&pageToken=${pageToken}` : '')
+
+      const res = await fetch(url, { next: { revalidate: 86400 } }) // cache 24h
+      if (!res.ok) {
+        console.warn('[youtube-sync] playlistItems request failed:', res.status, await res.text())
+        break
+      }
+
+      const data = await res.json()
+      for (const item of (data.items ?? [])) {
+        const videoId = item.snippet?.resourceId?.videoId
+        const title = item.snippet?.title
+        const publishedAt = item.snippet?.publishedAt
+        if (videoId && title) {
+          videos.push({
+            title,
+            url: `https://www.youtube.com/watch?v=${videoId}`,
+            publishedAt,
+          })
+        }
+      }
+
+      pageToken = data.nextPageToken
+    } while (pageToken && videos.length < 400) // safety cap against runaway pagination
+
+    console.log(`[youtube-sync] fetched ${videos.length} videos from uploads playlist ${UPLOADS_PLAYLIST_ID}`)
     return videos
   } catch (err) {
     console.warn('[youtube-sync] YouTube API fetch error:', err)
-    return []
+    return videos
   }
 }
 
