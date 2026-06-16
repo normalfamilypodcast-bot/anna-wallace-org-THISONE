@@ -113,26 +113,31 @@ interface YouTubeVideo {
 // RSS episode titles (typos, hashtags, minor rewording) even for the same episode.
 async function fetchYouTubeEpisodeUrls(): Promise<YouTubeVideo[]> {
   const apiKey = process.env.YOUTUBE_API_KEY
-  if (!apiKey) return []
+  if (!apiKey) {
+    console.warn('[youtube-sync] YOUTUBE_API_KEY is not set in this environment — skipping YouTube episode matching')
+    return []
+  }
   try {
     const res = await fetch(
       `https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${YOUTUBE_CHANNEL_ID}&type=video&order=date&maxResults=50&key=${apiKey}`,
       { next: { revalidate: 86400 } } // cache 24h
     )
     if (!res.ok) {
-      console.warn('YouTube API request failed:', res.status, await res.text())
+      console.warn('[youtube-sync] YouTube API request failed:', res.status, await res.text())
       return []
     }
     const data = await res.json()
-    return (data.items ?? [])
+    const videos = (data.items ?? [])
       .filter((item: any) => item.id?.videoId && item.snippet?.title)
       .map((item: any) => ({
         title: item.snippet.title as string,
         url: `https://www.youtube.com/watch?v=${item.id.videoId}`,
         publishedAt: item.snippet.publishedAt as string,
       }))
+    console.log(`[youtube-sync] fetched ${videos.length} videos from channel ${YOUTUBE_CHANNEL_ID}`)
+    return videos
   } catch (err) {
-    console.warn('YouTube API fetch error:', err)
+    console.warn('[youtube-sync] YouTube API fetch error:', err)
     return []
   }
 }
@@ -190,7 +195,10 @@ async function fetchEpisodesFromRss(rssUrl: string, availableSources: PodcastSou
   // Get show-level cover image as fallback
   const showCover = xml.match(/<itunes:image[^>]+href="([^"]+)"/)?.[1]
 
-  return items.map((match, i) => {
+  console.log(`[youtube-sync] matching ${items.length} RSS episodes against ${youtubeVideos.length} YouTube videos`)
+  let matchedCount = 0
+
+  const episodes = items.map((match, i) => {
     const block = match[1]
 
     const title =
@@ -245,6 +253,8 @@ async function fetchEpisodesFromRss(rssUrl: string, availableSources: PodcastSou
         // Match via YouTube Data API results (loose title-overlap + date-proximity).
         // Falls back to channel page if no API key or no confident match found.
         const ytUrl = findYouTubeMatch(title, validPubDate, youtubeVideos)
+        if (ytUrl) matchedCount++
+        else console.log(`[youtube-sync] no match for episode: "${title}"`)
         audioUrls.push({ ...s, url: ytUrl ?? s.url })
 
       } else {
@@ -264,6 +274,9 @@ async function fetchEpisodesFromRss(rssUrl: string, availableSources: PodcastSou
       audioUrls,
     }
   })
+
+  console.log(`[youtube-sync] matched ${matchedCount}/${items.length} episodes to a YouTube video`)
+  return episodes
 }
 
 async function fetchEpisodes(): Promise<PodcastEpisode[]> {

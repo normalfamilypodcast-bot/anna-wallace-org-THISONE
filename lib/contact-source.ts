@@ -33,9 +33,9 @@ export const YOUTUBE: PodcastSource = {
 
 
 const PODCAST_SOURCES: PodcastSource[] = [
+  YOUTUBE,
   SPOTIFY,
-  APPLE_PODCASTS,
-  YOUTUBE
+  APPLE_PODCASTS
 ];
 
 const SOCIALS = [
