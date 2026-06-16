@@ -67,11 +67,51 @@ function normalizeForMatch(s: string): string {
   return s.toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim()
 }
 
+// Words too common to be useful as match signals (kept short on purpose — erring
+// toward keeping a word is safer than dropping one that's actually distinctive).
+const STOPWORDS = new Set([
+  'a', 'an', 'the', 'and', 'or', 'but', 'to', 'of', 'in', 'on', 'at', 'by', 'is',
+  'are', 'was', 'were', 'be', 'been', 'do', 'does', 'did', 'i', 'we', 'you', 'your',
+  'my', 'our', 'this', 'that', 'these', 'those', 'with', 'for', 'about', 'how',
+  'why', 'what', 'who', 'when', 'it', 'its', 'can', 'will', 'into', 'them', 'me',
+  'us', 'her', 'his', 'their',
+])
+
+// Splits a title into meaningful lowercase word tokens, dropping stopwords and
+// very short words. Used for loose overlap matching, not exact comparison —
+// podcast RSS titles and YouTube video titles for the same episode are rarely
+// worded identically (typos, added hashtags, "we" vs "I", merged hashtag words).
+function tokenize(s: string): string[] {
+  return normalizeForMatch(s)
+    .split(' ')
+    .filter(w => w.length > 2 && !STOPWORDS.has(w))
+}
+
+// Scores how much of an episode's title shows up inside a candidate video title.
+// Checks substring containment per-token (not exact set match) so that things like
+// "inherit" matching inside "inherited", or "personal"+"growth" matching inside the
+// merged hashtag "personalgrowth", still count as hits.
+function titleOverlapScore(episodeTokens: string[], videoTitle: string): number {
+  if (episodeTokens.length === 0) return 0
+  const vtJoined = normalizeForMatch(videoTitle).replace(/ /g, '')
+  let hits = 0
+  for (const t of episodeTokens) {
+    if (vtJoined.includes(t)) hits++
+  }
+  return hits / episodeTokens.length
+}
+
+interface YouTubeVideo {
+  title: string
+  url: string
+  publishedAt: string
+}
+
 // Fetch episode-level YouTube video URLs via YouTube Data API v3.
-// Requires YOUTUBE_API_KEY env var. Matches by fuzzy title comparison since
-// YouTube video titles are often formatted differently from RSS episode titles
-// (e.g. "Ep 12: Title | A Normal Family Podcast" vs "Title").
-async function fetchYouTubeEpisodeUrls(): Promise<{ title: string; url: string }[]> {
+// Requires YOUTUBE_API_KEY env var. Matches by loose title-overlap scoring (see
+// titleOverlapScore) since YouTube video titles are often worded differently from
+// RSS episode titles (typos, hashtags, minor rewording) even for the same episode.
+async function fetchYouTubeEpisodeUrls(): Promise<YouTubeVideo[]> {
   const apiKey = process.env.YOUTUBE_API_KEY
   if (!apiKey) return []
   try {
@@ -89,6 +129,7 @@ async function fetchYouTubeEpisodeUrls(): Promise<{ title: string; url: string }
       .map((item: any) => ({
         title: item.snippet.title as string,
         url: `https://www.youtube.com/watch?v=${item.id.videoId}`,
+        publishedAt: item.snippet.publishedAt as string,
       }))
   } catch (err) {
     console.warn('YouTube API fetch error:', err)
@@ -96,16 +137,39 @@ async function fetchYouTubeEpisodeUrls(): Promise<{ title: string; url: string }
   }
 }
 
-function findYouTubeMatch(episodeTitle: string, videos: { title: string; url: string }[]): string | undefined {
-  const target = normalizeForMatch(episodeTitle)
-  if (!target) return undefined
+// Minimum overlap score to accept a match at all — below this, two titles are
+// treated as unrelated rather than risking a wrong link.
+const MATCH_THRESHOLD = 0.5
+
+function findYouTubeMatch(
+  episodeTitle: string,
+  episodePubDate: Date | null,
+  videos: YouTubeVideo[]
+): string | undefined {
+  const episodeTokens = tokenize(episodeTitle)
+  if (episodeTokens.length === 0) return undefined
+
+  let best: { url: string; score: number; dayDiff: number } | null = null
+
   for (const v of videos) {
-    const vt = normalizeForMatch(v.title)
-    if (vt.includes(target) || target.includes(vt)) {
-      return v.url
+    const score = titleOverlapScore(episodeTokens, v.title)
+    if (score < MATCH_THRESHOLD) continue
+
+    const vDate = v.publishedAt ? new Date(v.publishedAt) : null
+    const dayDiff =
+      episodePubDate && vDate && !isNaN(vDate.getTime())
+        ? Math.abs(vDate.getTime() - episodePubDate.getTime()) / 86400000
+        : Number.MAX_SAFE_INTEGER
+
+    // Prefer the highest-scoring title match; among near-equal scores, prefer
+    // whichever video was published closer to the episode's release date
+    // (helps when a short clip and the full episode share similar wording).
+    if (!best || score > best.score || (score === best.score && dayDiff < best.dayDiff)) {
+      best = { url: v.url, score, dayDiff }
     }
   }
-  return undefined
+
+  return best?.url
 }
 
 async function fetchEpisodesFromRss(rssUrl: string, availableSources: PodcastSource[]): Promise<PodcastEpisode[]> {
@@ -156,6 +220,8 @@ async function fetchEpisodesFromRss(rssUrl: string, availableSources: PodcastSou
     const guid = block.match(/<guid[^>]*>(.*?)<\/guid>/)?.[1] ?? String(i)
 
     const titleKey = title.trim().toLowerCase()
+    const parsedPubDate = pubDate ? new Date(pubDate) : null
+    const validPubDate = parsedPubDate && !isNaN(parsedPubDate.getTime()) ? parsedPubDate : null
 
     const audioUrls: PodcastSource[] = []
     availableSources.forEach(s => {
@@ -176,9 +242,9 @@ async function fetchEpisodesFromRss(rssUrl: string, availableSources: PodcastSou
         audioUrls.push({ ...s, url: appleUrl ?? s.url })
 
       } else if (s.icon === 'youtube') {
-        // Match via YouTube Data API results (fuzzy title match).
-        // Falls back to channel page if no API key or no match found.
-        const ytUrl = findYouTubeMatch(title, youtubeVideos)
+        // Match via YouTube Data API results (loose title-overlap + date-proximity).
+        // Falls back to channel page if no API key or no confident match found.
+        const ytUrl = findYouTubeMatch(title, validPubDate, youtubeVideos)
         audioUrls.push({ ...s, url: ytUrl ?? s.url })
 
       } else {
