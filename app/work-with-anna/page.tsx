@@ -121,6 +121,66 @@ export default async function WorkWithAnnaPage() {
               </div>
             </div>
           </div>
+
+          {/* Past events */}
+          <div className="mt-16 border-t border-border pt-12">
+            <p className="text-xs font-medium tracking-[0.2em] uppercase text-muted-foreground mb-8">Past events</p>
+
+            {/* Layers workshop */}
+            <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-start">
+              <div className="order-1 md:order-2">
+                <p className="text-xs font-medium tracking-[0.2em] uppercase text-muted-foreground mb-3">Workshop · Layers Festival</p>
+                <h3 className="text-2xl md:text-3xl font-serif text-foreground mb-2">From Dissonance to Resonance: Reframing a Stuck Relationship</h3>
+                <p className="text-sm text-muted-foreground mb-6">Sunday 20 September 2026 · 15:00–16:00 · Lisbon · 22 participants</p>
+                <div className="space-y-4 text-muted-foreground leading-relaxed mb-6">
+                  <p>A guided journaling and reflection workshop. Each participant chose one &quot;stuck&quot; relationship and looked at it through a new lens.</p>
+                  <p>Using the empty-chair method and structured prompts, I invited people to step into the other person&apos;s perspective as well as their own. Everyone left with one concrete action to make the relationship better.</p>
+                </div>
+                <div className="space-y-3 mb-6">
+                  <blockquote className="border-l-2 border-border pl-4 italic font-serif text-foreground">&ldquo;I was surprised by how deep I went in a short time.&rdquo;</blockquote>
+                  <blockquote className="border-l-2 border-border pl-4 italic font-serif text-foreground">&ldquo;I realised something deeply profound about my relationship with my father.&rdquo;</blockquote>
+                  <blockquote className="border-l-2 border-border pl-4 italic font-serif text-foreground">&ldquo;Anna created such a safe space with her warm energy and the right pace.&rdquo;</blockquote>
+                </div>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  Layers is a multidisciplinary event that encourages dialogue around mental health and informs about alternative therapies.{' '}
+                  <a href="https://layers-lisbon.com/programme-2026/#sunday" target="_blank" rel="noopener noreferrer" className="underline underline-offset-4 hover:text-foreground">See the Layers programme</a>
+                </p>
+              </div>
+              <div className="order-2 md:order-1 max-w-sm md:max-w-none mx-auto md:mx-0 w-full">
+                <Image
+                  src="https://res.cloudinary.com/dhngfy4p6/image/upload/v1790503336/Layers-web_xib0gt.jpg"
+                  alt="Layers Festival speaker poster for Anna Wallace, From Dissonance to Resonance workshop"
+                  width={900}
+                  height={1128}
+                  className="w-full h-auto"
+                />
+              </div>
+            </div>
+
+            {/* Layers interview (cancelled) */}
+            <div className="mt-14 pt-12 border-t border-border grid md:grid-cols-3 gap-8 md:gap-12 items-center">
+              <div className="order-1 md:order-2 md:col-span-2">
+                <div className="flex flex-wrap items-center gap-x-3 gap-y-2 text-xs font-medium tracking-[0.2em] uppercase text-muted-foreground mb-3">
+                  <span>Interview · Layers Festival</span>
+                  <span className="border border-border px-2 py-0.5 tracking-[0.15em]">Cancelled</span>
+                </div>
+                <h3 className="text-2xl md:text-3xl font-serif text-foreground mb-2">In conversation with director João Meirinhos</h3>
+                <p className="text-sm text-muted-foreground mb-6">Sunday 20 September 2026 · 12:30–13:30 · Lisbon</p>
+                <p className="text-muted-foreground leading-relaxed">
+                  I was invited to interview director João Meirinhos following the screening of his film &quot;Afluentes: Ayahuasca tourism in the Peruvian Amazon&quot; at Layers. The session was cancelled.
+                </p>
+              </div>
+              <div className="order-2 md:order-1 max-w-sm md:max-w-none mx-auto md:mx-0 w-full">
+                <Image
+                  src="https://res.cloudinary.com/dhngfy4p6/image/upload/v1781213946/anna_podcast_hero_new_lkgikt.jpg"
+                  alt="Anna Wallace wearing a lapel microphone"
+                  width={1200}
+                  height={1112}
+                  className="w-full h-auto"
+                />
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
