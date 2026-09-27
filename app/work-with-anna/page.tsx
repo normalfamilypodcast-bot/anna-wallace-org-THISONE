@@ -96,32 +96,6 @@ export default async function WorkWithAnnaPage() {
             </div>
           </div>
 
-          {/* Upcoming event card */}
-          <div className="mt-16 border-t border-border pt-12">
-            <p className="text-xs font-medium tracking-[0.2em] uppercase text-muted-foreground mb-8">Upcoming event</p>
-            <div className="grid md:grid-cols-2 gap-12 items-center">
-              <div className="relative aspect-square overflow-hidden bg-muted">
-                <Image
-                  src="https://images.lumacdn.com/cdn-cgi/image/format=auto,fit=cover,dpr=2,background=white,quality=75,width=400,height=400/uploads/ek/7cd59f09-82f5-40c9-a159-88b30b78f94f.jpg"
-                  alt="Reframe Your World, guided journaling workshop at Eritage, Lisbon"
-                  fill
-                  className="object-cover"
-                />
-              </div>
-              <div>
-                <h3 className="text-2xl md:text-3xl font-serif text-foreground mb-2">Reframe Your World</h3>
-                <p className="text-sm text-muted-foreground mb-6">Wednesday 3 June 2026 · 19:00–20:30 · Eritage Gallery, Lisbon · €16</p>
-                <div className="space-y-4 text-muted-foreground leading-relaxed mb-8">
-                  <p>Is a relationship you care about asking for your attention? This intimate guided workshop gives you space to pause, reflect, and look at it with fresh eyes.</p>
-                  <p>We draw on the themes of ERITAGE's current exhibition on identity, heritage and belonging. You'll leave with one practical step to make things better.</p>
-                </div>
-                <Button asChild size="lg" className="rounded-none px-8">
-                  <a href="https://luma.com/60ff6vik" target="_blank" rel="noopener noreferrer">Get your ticket: €16</a>
-                </Button>
-              </div>
-            </div>
-          </div>
-
           {/* Past events */}
           <div className="mt-16 border-t border-border pt-12">
             <p className="text-xs font-medium tracking-[0.2em] uppercase text-muted-foreground mb-8">Past events</p>
@@ -133,8 +107,8 @@ export default async function WorkWithAnnaPage() {
                 <h3 className="text-2xl md:text-3xl font-serif text-foreground mb-2">From Dissonance to Resonance: Reframing a Stuck Relationship</h3>
                 <p className="text-sm text-muted-foreground mb-6">Sunday 20 September 2026 · 15:00–16:00 · Lisbon · 22 participants</p>
                 <div className="space-y-4 text-muted-foreground leading-relaxed mb-6">
-                  <p>A guided journaling and reflection workshop. Each participant chose one &quot;stuck&quot; relationship and looked at it through a new lens.</p>
-                  <p>Using the empty-chair method and structured prompts, I invited people to step into the other person&apos;s perspective as well as their own. Everyone left with one concrete action to make the relationship better.</p>
+                  <p>A guided journaling and reflection workshop. Participants choose one &quot;stuck&quot; relationship and look at it through a new lens.</p>
+                  <p>Using the empty-chair method and structured prompts, the workshop invites participants to step into the other person&apos;s perspective as well as their own. Participants leave with one concrete action to make the relationship better.</p>
                 </div>
                 <div className="space-y-3 mb-6">
                   <blockquote className="border-l-2 border-border pl-4 italic font-serif text-foreground">&ldquo;I was surprised by how deep I went in a short time.&rdquo;</blockquote>
@@ -167,7 +141,7 @@ export default async function WorkWithAnnaPage() {
                 <h3 className="text-2xl md:text-3xl font-serif text-foreground mb-2">In conversation with director João Meirinhos</h3>
                 <p className="text-sm text-muted-foreground mb-6">Sunday 20 September 2026 · 12:30–13:30 · Lisbon</p>
                 <p className="text-muted-foreground leading-relaxed">
-                  I was invited to interview director João Meirinhos following the screening of his film &quot;Afluentes: Ayahuasca tourism in the Peruvian Amazon&quot; at Layers. The session was cancelled.
+                  A conversation with the director following the screening of his film &quot;Afluentes: Ayahuasca tourism in the Peruvian Amazon&quot; at Layers.
                 </p>
               </div>
               <div className="order-2 md:order-1 max-w-sm md:max-w-none mx-auto md:mx-0 w-full">
@@ -178,6 +152,28 @@ export default async function WorkWithAnnaPage() {
                   height={1112}
                   className="w-full h-auto"
                 />
+              </div>
+            </div>
+            {/* Reframe Your World, Eritage */}
+            <div className="mt-14 pt-12 border-t border-border grid md:grid-cols-3 gap-8 md:gap-12 items-center">
+              <div className="order-1 md:order-2 md:col-span-2">
+                <p className="text-xs font-medium tracking-[0.2em] uppercase text-muted-foreground mb-3">Workshop · Eritage</p>
+                <h3 className="text-2xl md:text-3xl font-serif text-foreground mb-2">Reframe Your World</h3>
+                <p className="text-sm text-muted-foreground mb-6">Wednesday 3 June 2026 · 19:00–20:30 · Eritage Gallery, Lisbon</p>
+                <div className="space-y-4 text-muted-foreground leading-relaxed">
+                  <p>An intimate guided workshop that gives participants space to pause, reflect, and look at a relationship they care about with fresh eyes.</p>
+                  <p>It draws on the themes of ERITAGE&apos;s exhibition on identity, heritage and belonging. Participants leave with one practical step to make things better.</p>
+                </div>
+              </div>
+              <div className="order-2 md:order-1 max-w-sm md:max-w-none mx-auto md:mx-0 w-full">
+                <div className="relative aspect-square overflow-hidden bg-muted">
+                  <Image
+                    src="https://images.lumacdn.com/cdn-cgi/image/format=auto,fit=cover,dpr=2,background=white,quality=75,width=400,height=400/uploads/ek/7cd59f09-82f5-40c9-a159-88b30b78f94f.jpg"
+                    alt="Reframe Your World, guided journaling workshop at Eritage, Lisbon"
+                    fill
+                    className="object-cover"
+                  />
+                </div>
               </div>
             </div>
           </div>
